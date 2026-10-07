@@ -7,8 +7,6 @@ import '../widgets/lanjut_card.dart';
 import 'materi_page.dart';
 import 'video_page.dart';
 import 'kuis_page.dart';
-import 'progress_page.dart';
-import 'profil_page.dart';
 
 class BerandaPage extends StatelessWidget {
   const BerandaPage({super.key});
@@ -33,18 +31,6 @@ class BerandaPage extends StatelessWidget {
         subtitle: 'Uji pemahamanmu melalui kuis',
         icon: Icons.quiz_outlined,
         color: Colors.orange,
-      ),
-      MenuItem(
-        title: 'Progress',
-        subtitle: 'Lihat perkembangan belajarmu',
-        icon: Icons.bar_chart_rounded,
-        color: Colors.green,
-      ),
-      MenuItem(
-        title: 'Profil',
-        subtitle: 'Kelola informasi akunmu',
-        icon: Icons.person_outline_rounded,
-        color: Colors.pink,
       ),
     ];
 
@@ -215,20 +201,6 @@ class BerandaPage extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                             builder: (_) => const KuisPage(),
-                          ),
-                        );
-                      } else if (item.title == 'Progress') {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const ProgressPage(),
-                          ),
-                        );
-                      } else if (item.title == 'Profil') {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const ProfilPage(),
                           ),
                         );
                       }

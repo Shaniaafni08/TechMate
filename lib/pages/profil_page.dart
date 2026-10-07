@@ -77,19 +77,6 @@ class ProfilPage extends StatelessWidget {
             ),
 
             ProfilTile(
-              icon: Icons.notifications_none,
-              title: 'Notifikasi',
-              subtitle: 'Atur pemberitahuan aplikasi',
-              onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Menu Notifikasi'),
-                  ),
-                );
-              },
-            ),
-
-            ProfilTile(
               icon: Icons.settings_outlined,
               title: 'Pengaturan',
               subtitle: 'Atur preferensi aplikasi',

@@ -121,15 +121,6 @@ class ProgressPage extends StatelessWidget {
                     color: AppColors.purple,
                   ),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _StatCard(
-                    icon: Icons.quiz_outlined,
-                    value: '1',
-                    label: 'Kuis',
-                    color: AppColors.blue,
-                  ),
-                ),
               ],
             ),
 
@@ -143,15 +134,6 @@ class ProgressPage extends StatelessWidget {
                     value: '65%',
                     label: 'Selesai',
                     color: Colors.green,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _StatCard(
-                    icon: Icons.access_time_rounded,
-                    value: '2 Jam',
-                    label: 'Belajar',
-                    color: Colors.orange,
                   ),
                 ),
               ],
