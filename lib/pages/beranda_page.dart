@@ -65,7 +65,7 @@ class BerandaPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Halo, Pelajar! 👋',
+                          'Selamat Datang! 👋',
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -115,7 +115,7 @@ class BerandaPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Belajar TIK Jadi\nLebih Interaktif 🚀',
+                      'Belajar TIK Jadi Lebih Interaktif 🚀',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 22,

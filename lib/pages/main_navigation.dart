@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import 'beranda_page.dart';
 import 'materi_page.dart';
-import 'progress_page.dart';
-import 'profil_page.dart';
+import 'video_page.dart';
+import 'kuis_page.dart';
 
 class MainNavigation extends StatefulWidget {
   const MainNavigation({super.key});
@@ -19,8 +19,8 @@ class _MainNavigationState extends State<MainNavigation> {
   final List<Widget> _pages = const [
     BerandaPage(),
     MateriPage(),
-    ProgressPage(),
-    ProfilPage(),
+    VideoPage(),
+    KuisPage(),
   ];
 
   @override
@@ -50,12 +50,12 @@ class _MainNavigationState extends State<MainNavigation> {
           NavigationDestination(
             icon: Icon(Icons.bar_chart_outlined),
             selectedIcon: Icon(Icons.bar_chart),
-            label: 'Progress',
+            label: 'Video',
           ),
           NavigationDestination(
             icon: Icon(Icons.person_outline),
             selectedIcon: Icon(Icons.person),
-            label: 'Profil',
+            label: 'Kuis',
           ),
         ],
       ),

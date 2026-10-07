@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/app_theme.dart';
 import '../widgets/techmate_logo.dart';
-import 'main_navigation.dart';
+import 'beranda_page.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -39,7 +39,7 @@ class _SplashScreenState extends State<SplashScreen>
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (_) => const MainNavigation(),
+          builder: (_) => const BerandaPage(),
         ),
       );
     });
