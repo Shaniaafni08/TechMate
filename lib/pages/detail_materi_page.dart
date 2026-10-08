@@ -3,14 +3,12 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../models/materi_model.dart';
 import '../widgets/gradient_scaffold.dart';
+import 'materi_belajar_page.dart';
 
 class DetailMateriPage extends StatelessWidget {
   final MateriModel materi;
 
-  const DetailMateriPage({
-    super.key,
-    required this.materi,
-  });
+  const DetailMateriPage({super.key, required this.materi});
 
   @override
   Widget build(BuildContext context) {
@@ -30,11 +28,7 @@ class DetailMateriPage extends StatelessWidget {
                   color: materi.color.withOpacity(0.12),
                   borderRadius: BorderRadius.circular(24),
                 ),
-                child: Icon(
-                  materi.icon,
-                  color: materi.color,
-                  size: 48,
-                ),
+                child: Icon(materi.icon, color: materi.color, size: 48),
               ),
             ),
 
@@ -119,15 +113,9 @@ class DetailMateriPage extends StatelessWidget {
 
                   const SizedBox(height: 10),
 
-                  _TujuanItem(
-                    text: 'Memahami konsep dasar materi.',
-                  ),
-                  _TujuanItem(
-                    text: 'Mengenali contoh penerapannya.',
-                  ),
-                  _TujuanItem(
-                    text: 'Mampu menjelaskan kembali materi.',
-                  ),
+                  _TujuanItem(text: 'Memahami konsep dasar materi.'),
+                  _TujuanItem(text: 'Mengenali contoh penerapannya.'),
+                  _TujuanItem(text: 'Mampu menjelaskan kembali materi.'),
                 ],
               ),
             ),
@@ -138,21 +126,17 @@ class DetailMateriPage extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
+                // REVISI: Tombol Mulai Belajar diarahkan ke halaman pembelajaran
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text(
-                        'Materi siap dipelajari!',
-                      ),
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const MateriBelajarPage(),
                     ),
                   );
                 },
-                icon: const Icon(
-                  Icons.play_arrow_rounded,
-                ),
-                label: const Text(
-                  'Mulai Belajar',
-                ),
+                icon: const Icon(Icons.play_arrow_rounded),
+                label: const Text('Mulai Belajar'),
               ),
             ),
 
@@ -167,9 +151,7 @@ class DetailMateriPage extends StatelessWidget {
 class _TujuanItem extends StatelessWidget {
   final String text;
 
-  const _TujuanItem({
-    required this.text,
-  });
+  const _TujuanItem({required this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -178,11 +160,7 @@ class _TujuanItem extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(
-            Icons.check_circle,
-            color: AppColors.purple,
-            size: 19,
-          ),
+          const Icon(Icons.check_circle, color: AppColors.purple, size: 19),
           const SizedBox(width: 8),
           Expanded(
             child: Text(

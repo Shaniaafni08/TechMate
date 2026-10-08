@@ -111,25 +111,50 @@ class BerandaPage extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+
+                child: Row(
                   children: [
-                    Text(
-                      'Belajar TIK Jadi Lebih Interaktif 🚀',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        height: 1.2,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Belajar TIK Jadi Lebih Interaktif 🚀',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              height: 1.2,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          const Text(
+                            'Jelajahi materi, video, dan kuis untuk meningkatkan pemahamanmu.',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                              height: 1.4,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    SizedBox(height: 10),
-                    Text(
-                      'Jelajahi materi, video, dan kuis untuk meningkatkan pemahamanmu.',
-                      style: TextStyle(
-                        color: Colors.white70,
-                        fontSize: 13,
-                        height: 1.4,
+
+                    const SizedBox(width: 12),
+
+                    // REVISI 1: ilustrasi komputer sederhana
+                    Container(
+                      width: 75,
+                      height: 75,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.18),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: const Icon(
+                        Icons.computer_rounded,
+                        color: Colors.white,
+                        size: 42,
                       ),
                     ),
                   ],
@@ -156,9 +181,7 @@ class BerandaPage extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (_) => const MateriPage(),
-                    ),
+                    MaterialPageRoute(builder: (_) => const MateriPage()),
                   );
                 },
               ),
@@ -176,32 +199,27 @@ class BerandaPage extends StatelessWidget {
 
               const SizedBox(height: 12),
 
+              // REVISI 3: Menu Utama dibuat menjadi 1 kolom dengan card yang lebih ringkas
               ...menu.map(
                 (item) => Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
+                  padding: const EdgeInsets.only(bottom: 10),
                   child: MenuCard(
                     item: item,
                     onTap: () {
                       if (item.title == 'Materi') {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                            builder: (_) => const MateriPage(),
-                          ),
+                          MaterialPageRoute(builder: (_) => const MateriPage()),
                         );
                       } else if (item.title == 'Video') {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                            builder: (_) => const VideoPage(),
-                          ),
+                          MaterialPageRoute(builder: (_) => const VideoPage()),
                         );
                       } else if (item.title == 'Kuis') {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                            builder: (_) => const KuisPage(),
-                          ),
+                          MaterialPageRoute(builder: (_) => const KuisPage()),
                         );
                       }
                     },

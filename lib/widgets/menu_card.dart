@@ -7,11 +7,7 @@ class MenuCard extends StatelessWidget {
   final MenuItem item;
   final VoidCallback onTap;
 
-  const MenuCard({
-    super.key,
-    required this.item,
-    required this.onTap,
-  });
+  const MenuCard({super.key, required this.item, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -31,20 +27,17 @@ class MenuCard extends StatelessWidget {
             ),
           ],
         ),
+        // REVISI 3: Card menu dibuat lebih ringkas
         child: Row(
           children: [
             Container(
-              width: 52,
-              height: 52,
+              width: 46,
+              height: 46,
               decoration: BoxDecoration(
                 color: item.color.withOpacity(0.12),
-                borderRadius: BorderRadius.circular(15),
+                borderRadius: BorderRadius.circular(13),
               ),
-              child: Icon(
-                item.icon,
-                color: item.color,
-                size: 27,
-              ),
+              child: Icon(item.icon, color: item.color, size: 24),
             ),
 
             const SizedBox(width: 14),
@@ -56,27 +49,23 @@ class MenuCard extends StatelessWidget {
                   Text(
                     item.title,
                     style: const TextStyle(
-                      fontSize: 16,
+                      fontSize: 15,
                       fontWeight: FontWeight.bold,
                       color: AppColors.textDark,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 3),
                   Text(
                     item.subtitle,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                      fontSize: 12.5,
+                      fontSize: 12,
                       color: AppColors.textGrey,
                     ),
                   ),
                 ],
               ),
-            ),
-
-            const Icon(
-              Icons.arrow_forward_ios_rounded,
-              size: 16,
-              color: AppColors.textGrey,
             ),
           ],
         ),
