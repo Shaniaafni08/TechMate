@@ -131,7 +131,8 @@ class DetailMateriPage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => const MateriBelajarPage(),
+                      // REVISI 12: Mengirim data topik terpilih
+                      builder: (_) => MateriBelajarPage(materi: materi),
                     ),
                   );
                 },

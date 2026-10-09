@@ -14,6 +14,40 @@ class MateriModel {
   });
 }
 
+// Jenis slide untuk materi dan aktivitas interaktif
+enum JenisSlide {
+  materi,
+  pilihanGanda,
+  tebakGambar,
+  mencocokkan,
+  klasifikasi,
+  simulasi,
+}
+
+// REVISI 2: Model untuk menyimpan satu slide pembelajaran
+class SlideMateriModel {
+  final String judul;
+  final String isi;
+  final IconData ikon;
+  final JenisSlide jenis;
+
+  // Dipakai untuk pilihan jawaban pada aktivitas
+  final List<String> pilihan;
+  final int jawabanBenar;
+  final String penjelasan;
+
+  const SlideMateriModel({
+    required this.judul,
+    required this.isi,
+    this.ikon = Icons.computer_rounded,
+    this.jenis = JenisSlide.materi,
+    this.pilihan = const [],
+    this.jawabanBenar = 0,
+    this.penjelasan = '',
+  });
+}
+
+
 const List<MateriModel> daftarMateri = [
   MateriModel(
     judul: 'Pengenalan Teknologi',

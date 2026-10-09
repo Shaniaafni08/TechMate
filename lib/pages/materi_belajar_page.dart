@@ -2,11 +2,18 @@ import 'package:flutter/material.dart';
 
 import '../theme/app_theme.dart';
 import '../widgets/gradient_scaffold.dart';
+import '../models/materi_model.dart';
 
 // Mengubah halaman menjadi StatefulWidget
 // agar isi materi bisa berpindah slide.
 class MateriBelajarPage extends StatefulWidget {
-  const MateriBelajarPage({super.key});
+  // REVISI 10: Menyimpan topik yang dipilih pengguna
+  final MateriModel materi;
+
+  const MateriBelajarPage({
+    super.key,
+    required this.materi,
+  });
 
   @override
   State<MateriBelajarPage> createState() => _MateriBelajarPageState();
@@ -35,18 +42,13 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
           'mouse, dan CPU.',
       'ikon': Icons.desktop_windows_rounded,
     },
-    
+
     // REVISI 11: Aktivitas interaktif di tengah materi
     {
       'jenis': 'aktivitas',
       'judul': 'Aktivitas Interaktif',
       'isi': 'Manakah yang termasuk perangkat keras komputer?',
-      'pilihan': [
-        'Keyboard',
-        'Microsoft Word',
-        'Windows',
-        'Google Chrome',
-      ],
+      'pilihan': ['Keyboard', 'Microsoft Word', 'Windows', 'Google Chrome'],
       'jawabanBenar': 0,
       'ikon': Icons.quiz_rounded,
     },
@@ -88,17 +90,76 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
 
             const SizedBox(height: 12),
 
-            // Isi penjelasan mengikuti slide aktif
-            Text(
-              _slides[_slideAktif]['isi'],
-              style: const TextStyle(
-                fontSize: 15,
-                color: AppColors.textGrey,
-                height: 1.6,
+
+    // REVISI 12: Menampilkan isi sesuai jenis slide
+    Text(
+      _slides[_slideAktif]['isi'],
+      style: const TextStyle(
+        fontSize: 15,
+        color: AppColors.textGrey,
+        height: 1.6,
+      ),
+    ),
+
+    // Pilihan jawaban hanya muncul pada slide aktivitas
+    if (_slides[_slideAktif]['jenis'] == 'aktivitas') ...[
+      const SizedBox(height: 20),
+
+      ...List.generate(
+        (_slides[_slideAktif]['pilihan'] as List<String>).length,
+        (index) {
+          final pilihan =
+              (_slides[_slideAktif]['pilihan'] as List<String>)[index];
+
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: SizedBox(
+              width: double.infinity,
+              child: OutlinedButton(
+                onPressed: _aktivitasSelesai
+                    ? null
+                    : () {
+                        setState(() {
+                          _jawabanDipilih = index;
+                          _aktivitasSelesai = true;
+                        });
+
+                        final benar =
+                            index ==
+                            _slides[_slideAktif]['jawabanBenar'];
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              benar
+                                  ? 'Benar! Keyboard termasuk perangkat keras.'
+                                  : 'Belum tepat, coba pelajari lagi materinya.',
+                            ),
+                          ),
+                        );
+                      },
+                child: Text(pilihan),
               ),
             ),
+          );
+        },
+      ),
 
-            const SizedBox(height: 24),
+      if (_aktivitasSelesai)
+        Text(
+          _jawabanDipilih ==
+                  _slides[_slideAktif]['jawabanBenar']
+              ? 'Jawaban kamu benar!'
+              : 'Jawaban kamu belum tepat.',
+          style: TextStyle(
+            color: _jawabanDipilih ==
+                    _slides[_slideAktif]['jawabanBenar']
+                ? Colors.green
+                : Colors.red,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+    ],
 
             const SizedBox(height: 24),
 
@@ -137,7 +198,9 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
                     onPressed: _slideAktif > 0
                         ? () {
                             setState(() {
-                              _slideAktif--;
+                              _slideAktif++;
+                              _jawabanDipilih = null;
+                              _aktivitasSelesai = false;
                             });
                           }
                         : null,
@@ -158,10 +221,7 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
                             content: Text('Materi Sistem Komputer selesai!'),
                           ),
                         );
-                        Navigator.popUntil(
-                          context,
-                          (route) => route.isFirst,
-                        );
+                        Navigator.popUntil(context, (route) => route.isFirst);
                       }
                     },
                     child: Text(
