@@ -3,8 +3,69 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../widgets/gradient_scaffold.dart';
 
-class MateriBelajarPage extends StatelessWidget {
+// Mengubah halaman menjadi StatefulWidget
+// agar isi materi bisa berpindah slide.
+class MateriBelajarPage extends StatefulWidget {
   const MateriBelajarPage({super.key});
+
+  @override
+  State<MateriBelajarPage> createState() => _MateriBelajarPageState();
+}
+
+class _MateriBelajarPageState extends State<MateriBelajarPage> {
+  int _slideAktif = 0;
+  // Menimpan jawaban aktivitas
+  int? _jawabanDipilih;
+  bool _aktivitasSelesai = false;
+
+  // Daftar materi yang ditampilkan per slide.
+  final List<Map<String, dynamic>> _slides = [
+    {
+      'judul': 'Pengertian Sistem Komputer',
+      'isi':
+          'Sistem komputer adalah sekumpulan komponen '
+          'yang bekerja sama untuk mengolah data menjadi informasi.',
+      'ikon': Icons.computer_rounded,
+    },
+    {
+      'judul': 'Hardware (Perangkat Keras)',
+      'isi':
+          'Hardware adalah bagian fisik komputer yang dapat '
+          'dilihat dan disentuh, seperti monitor, keyboard, '
+          'mouse, dan CPU.',
+      'ikon': Icons.desktop_windows_rounded,
+    },
+    
+    // REVISI 11: Aktivitas interaktif di tengah materi
+    {
+      'jenis': 'aktivitas',
+      'judul': 'Aktivitas Interaktif',
+      'isi': 'Manakah yang termasuk perangkat keras komputer?',
+      'pilihan': [
+        'Keyboard',
+        'Microsoft Word',
+        'Windows',
+        'Google Chrome',
+      ],
+      'jawabanBenar': 0,
+      'ikon': Icons.quiz_rounded,
+    },
+    {
+      'judul': 'Software (Perangkat Lunak)',
+      'isi':
+          'Software adalah program yang menjalankan perintah '
+          'pada komputer, contohnya Windows, Microsoft Word, '
+          'dan aplikasi browser.',
+      'ikon': Icons.apps_rounded,
+    },
+    {
+      'judul': 'Brainware (Pengguna)',
+      'isi':
+          'Brainware adalah manusia yang menggunakan atau '
+          'mengelola komputer, seperti siswa, guru, dan teknisi.',
+      'ikon': Icons.person_rounded,
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -15,9 +76,10 @@ class MateriBelajarPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Pengertian Sistem Komputer',
-              style: TextStyle(
+            // Judul mengikuti slide yang aktif
+            Text(
+              _slides[_slideAktif]['judul'],
+              style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
                 color: AppColors.textDark,
@@ -26,11 +88,10 @@ class MateriBelajarPage extends StatelessWidget {
 
             const SizedBox(height: 12),
 
-            const Text(
-              'Sistem komputer adalah sekumpulan komponen '
-              'yang saling berhubungan dan bekerja sama untuk '
-              'mengolah data menjadi informasi.',
-              style: TextStyle(
+            // Isi penjelasan mengikuti slide aktif
+            Text(
+              _slides[_slideAktif]['isi'],
+              style: const TextStyle(
                 fontSize: 15,
                 color: AppColors.textGrey,
                 height: 1.6,
@@ -39,125 +100,76 @@ class MateriBelajarPage extends StatelessWidget {
 
             const SizedBox(height: 24),
 
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(18),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(18),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, 5),
-                  ),
-                ],
-              ),
-              child: const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Komponen Sistem Komputer',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textDark,
-                    ),
-                  ),
+            const SizedBox(height: 24),
 
-                  SizedBox(height: 12),
-
-                  Text(
-                    'Sistem komputer terdiri dari beberapa '
-                    'komponen utama yang saling mendukung, yaitu:',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: AppColors.textGrey,
-                      height: 1.5,
-                    ),
-                  ),
-
-                  SizedBox(height: 14),
-
-                  Text(
-                    '1. Hardware (Perangkat Keras)',
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textDark,
-                    ),
-                  ),
-
-                  SizedBox(height: 6),
-
-                  Text(
-                    'Hardware merupakan bagian fisik komputer '
-                    'yang dapat dilihat dan disentuh, seperti '
-                    'keyboard, monitor, mouse, dan CPU.',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: AppColors.textGrey,
-                      height: 1.5,
-                    ),
-                  ),
-
-                  SizedBox(height: 14),
-
-                  Text(
-                    '2. Software (Perangkat Lunak)',
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textDark,
-                    ),
-                  ),
-
-                  SizedBox(height: 6),
-
-                  Text(
-                    'Software adalah program yang digunakan '
-                    'untuk menjalankan berbagai fungsi pada komputer.',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: AppColors.textGrey,
-                      height: 1.5,
-                    ),
-                  ),
-
-                  SizedBox(height: 14),
-
-                  Text(
-                    '3. Brainware',
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textDark,
-                    ),
-                  ),
-
-                  SizedBox(height: 6),
-
-                  Text(
-                    'Brainware adalah manusia yang menggunakan '
-                    'dan mengoperasikan sistem komputer.',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: AppColors.textGrey,
-                      height: 1.5,
-                    ),
-                  ),
-                ],
+            // REVISI 5: Ilustrasi untuk setiap slide materi
+            Center(
+              child: Container(
+                width: 160,
+                height: 140,
+                decoration: BoxDecoration(
+                  color: AppColors.purple.withOpacity(0.10),
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: Icon(
+                  _slides[_slideAktif]['ikon'] as IconData,
+                  size: 80,
+                  color: AppColors.purple,
+                ),
               ),
             ),
 
             const SizedBox(height: 24),
 
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {},
-                child: const Text('Lanjut'),
+            // REVISI 6: Nomor slide
+            Center(
+              child: Text(
+                'Slide ${_slideAktif + 1} dari ${_slides.length}',
+                style: const TextStyle(fontSize: 13, color: AppColors.textGrey),
               ),
+            ),
+
+            // REVISI 7: Navigasi antar-slide
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: _slideAktif > 0
+                        ? () {
+                            setState(() {
+                              _slideAktif--;
+                            });
+                          }
+                        : null,
+                    child: const Text('Kembali'),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (_slideAktif < _slides.length - 1) {
+                        setState(() {
+                          _slideAktif++;
+                        });
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Materi Sistem Komputer selesai!'),
+                          ),
+                        );
+                        Navigator.popUntil(
+                          context,
+                          (route) => route.isFirst,
+                        );
+                      }
+                    },
+                    child: Text(
+                      _slideAktif == _slides.length - 1 ? 'Selesai' : 'Lanjut',
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
