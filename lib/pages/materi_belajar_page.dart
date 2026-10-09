@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../widgets/gradient_scaffold.dart';
 import '../models/materi_model.dart';
+
 import 'package:audioplayers/audioplayers.dart';
 
 // Mengubah halaman menjadi StatefulWidget
@@ -18,97 +19,81 @@ class MateriBelajarPage extends StatefulWidget {
 }
 
 class _MateriBelajarPageState extends State<MateriBelajarPage> {
+  // REVISI: Membersihkan pemutar audio saat halaman ditutup
+  @override
+  void dispose() {
+    _audioPlayer.dispose();
+    super.dispose();
+  }
+
   int _slideAktif = 0;
   // Menimpan jawaban aktivitas
   int? _jawabanDipilih;
   bool _aktivitasSelesai = false;
   // REVISI: Pemutar efek suara aktivitas
-final AudioPlayer _audioPlayer = AudioPlayer();
+  final AudioPlayer _audioPlayer = AudioPlayer();
 
-Future<void> _putarEfek(String namaFile) async {
-  await _audioPlayer.stop();
-  await _audioPlayer.play(AssetSource(namaFile));
-}
+  Future<void> _putarEfek(String namaFile) async {
+    await _audioPlayer.stop();
+    await _audioPlayer.play(AssetSource(namaFile));
+  }
 
-  // Daftar materi yang ditampilkan per slide.
-  final List<Map<String, dynamic>> _slides = [
-    {
-      'judul': 'Pengertian Sistem Komputer',
-      'isi':
-          'Sistem komputer adalah sekumpulan komponen '
-          'yang bekerja sama untuk mengolah data menjadi informasi.',
-      'ikon': Icons.computer_rounded,
-    },
-    {
-      'judul': 'Hardware (Perangkat Keras)',
-      'isi':
-          'Hardware adalah bagian fisik komputer yang dapat '
-          'dilihat dan disentuh, seperti monitor, keyboard, '
-          'mouse, dan CPU.',
-      'ikon': Icons.desktop_windows_rounded,
-    },
+// REVISI 22: Materi Pengenalan Teknologi
+final List<Map<String, dynamic>> _slides = [
+  {
+    'judul': 'Pengertian Teknologi',
+    'isi':
+        'Teknologi adalah penerapan ilmu pengetahuan '
+        'untuk membantu manusia menyelesaikan pekerjaan '
+        'dan memenuhi kebutuhan. Contohnya adalah komputer, '
+        'smartphone, dan internet.',
+    'ikon': Icons.devices_rounded,
+  },
+  {
+    'judul': 'Contoh Teknologi di Sekitar Kita',
+    'isi':
+        'Teknologi dapat ditemukan dalam kehidupan sehari-hari. '
+        'Smartphone digunakan untuk berkomunikasi, komputer '
+        'membantu mengerjakan tugas, dan mesin ATM membantu '
+        'melakukan transaksi perbankan.',
+    'ikon': Icons.phone_android_rounded,
+  },
+  {
+    'jenis': 'aktivitas',
+    'judul': 'Aktivitas Interaktif',
+    'isi':
+        'Manakah contoh teknologi yang dapat digunakan '
+        'untuk berkomunikasi jarak jauh?',
+    'pilihan': [
+      'Smartphone',
+      'Penggaris',
+      'Buku tulis',
+      'Pensil',
+    ],
+    'jawabanBenar': 0,
+    'ikon': Icons.quiz_rounded,
+  },
+  {
+    'judul': 'Manfaat Teknologi',
+    'isi':
+        'Teknologi membantu manusia berkomunikasi, '
+        'belajar, bekerja, dan mencari informasi. Dalam '
+        'pembelajaran, teknologi dapat digunakan untuk '
+        'mengakses materi, menonton video edukasi, dan '
+        'mengerjakan latihan soal.',
+    'ikon': Icons.lightbulb_rounded,
+  },
+  {
+    'judul': 'Menggunakan Teknologi dengan Bijak',
+    'isi':
+        'Teknologi harus digunakan secara bijak dan '
+        'bertanggung jawab. Gunakan perangkat untuk '
+        'kegiatan yang bermanfaat, periksa kebenaran '
+        'informasi, dan jaga privasi saat menggunakan internet.',
+    'ikon': Icons.verified_user_rounded,
+  },
+];
 
-    // REVISI 11: Aktivitas interaktif di tengah materi
-    {
-      'jenis': 'aktivitas',
-      'judul': 'Aktivitas Interaktif',
-      'isi': 'Manakah yang termasuk perangkat keras komputer?',
-      'pilihan': ['Keyboard', 'Microsoft Word', 'Windows', 'Google Chrome'],
-      'jawabanBenar': 0,
-      'ikon': Icons.quiz_rounded,
-    },
-    {
-      'judul': 'Software (Perangkat Lunak)',
-      'isi':
-          'Software adalah program yang menjalankan perintah '
-          'pada komputer, contohnya Windows, Microsoft Word, '
-          'dan aplikasi browser.',
-      'ikon': Icons.apps_rounded,
-    },
-    {
-      'judul': 'Brainware (Pengguna)',
-      'isi':
-          'Brainware adalah manusia yang menggunakan atau '
-          'mengelola komputer, seperti siswa, guru, dan teknisi.',
-      'ikon': Icons.person_rounded,
-    },
-
-    // REVISI 15: Penambahan materi komponen sistem komputer
-    {
-      'judul': 'Perangkat Input',
-      'isi':
-          'Perangkat input digunakan untuk memasukkan data atau '
-          'perintah ke dalam komputer. Contohnya keyboard untuk '
-          'mengetik, mouse untuk menggerakkan penunjuk, mikrofon '
-          'untuk merekam suara, dan scanner untuk memindai dokumen. '
-          'Pemilihan perangkat input bergantung pada jenis data '
-          'yang ingin dimasukkan.',
-      'ikon': Icons.keyboard_rounded,
-    },
-    {
-      'judul': 'Perangkat Proses',
-      'isi':
-          'Perangkat proses mengolah data sesuai instruksi program. '
-          'CPU atau Central Processing Unit menjalankan instruksi '
-          'dan mengendalikan berbagai operasi komputer. RAM membantu '
-          'menyediakan ruang penyimpanan sementara bagi data dan '
-          'program yang sedang digunakan. RAM bersifat sementara, '
-          'sehingga isinya dapat hilang ketika komputer dimatikan.',
-      'ikon': Icons.memory_rounded,
-    },
-    {
-      'judul': 'Perangkat Output dan Penyimpanan',
-      'isi':
-          'Perangkat output menyajikan hasil pengolahan data, '
-          'misalnya monitor menampilkan gambar dan printer mencetak '
-          'dokumen. Sementara itu, perangkat penyimpanan seperti '
-          'SSD, hard disk, dan flashdisk menyimpan file agar dapat '
-          'digunakan kembali. Perlu diingat bahwa RAM berbeda dari '
-          'SSD atau hard disk karena RAM digunakan sebagai memori '
-          'kerja sementara.',
-      'ikon': Icons.storage_rounded,
-    },
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -253,9 +238,10 @@ Future<void> _putarEfek(String namaFile) async {
                                 final benar =
                                     index ==
                                     _slides[_slideAktif]['jawabanBenar'];
-                                    // REVISI: Efek suara sesuai jawaban
-                                    await _putarEfek(benar ? 'correct.mp3' : 'wrong.mp3');
-                                  
+                                // REVISI: Efek suara sesuai jawaban
+                                await _putarEfek(
+                                  benar ? 'correct.mp3' : 'wrong.mp3',
+                                );
 
                                 setState(() {
                                   _jawabanDipilih = index;
