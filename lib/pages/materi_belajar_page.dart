@@ -5,6 +5,7 @@ import '../widgets/gradient_scaffold.dart';
 import '../models/materi_model.dart';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // Mengubah halaman menjadi StatefulWidget
 // agar isi materi bisa berpindah slide.
@@ -26,6 +27,13 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
     super.dispose();
   }
 
+  // REVISI 25: Memuat slide sesuai topik pilihan
+@override
+void initState() {
+  super.initState();
+  _slides = _buatSlides(widget.materi.judul);
+}
+
   int _slideAktif = 0;
   // Menimpan jawaban aktivitas
   int? _jawabanDipilih;
@@ -38,61 +46,223 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
     await _audioPlayer.play(AssetSource(namaFile));
   }
 
-// REVISI 22: Materi Pengenalan Teknologi
-final List<Map<String, dynamic>> _slides = [
-  {
-    'judul': 'Pengertian Teknologi',
-    'isi':
-        'Teknologi adalah penerapan ilmu pengetahuan '
-        'untuk membantu manusia menyelesaikan pekerjaan '
-        'dan memenuhi kebutuhan. Contohnya adalah komputer, '
-        'smartphone, dan internet.',
-    'ikon': Icons.devices_rounded,
-  },
-  {
-    'judul': 'Contoh Teknologi di Sekitar Kita',
-    'isi':
-        'Teknologi dapat ditemukan dalam kehidupan sehari-hari. '
-        'Smartphone digunakan untuk berkomunikasi, komputer '
-        'membantu mengerjakan tugas, dan mesin ATM membantu '
-        'melakukan transaksi perbankan.',
-    'ikon': Icons.phone_android_rounded,
-  },
-  {
-    'jenis': 'aktivitas',
-    'judul': 'Aktivitas Interaktif',
-    'isi':
-        'Manakah contoh teknologi yang dapat digunakan '
-        'untuk berkomunikasi jarak jauh?',
-    'pilihan': [
-      'Smartphone',
-      'Penggaris',
-      'Buku tulis',
-      'Pensil',
-    ],
-    'jawabanBenar': 0,
-    'ikon': Icons.quiz_rounded,
-  },
-  {
-    'judul': 'Manfaat Teknologi',
-    'isi':
-        'Teknologi membantu manusia berkomunikasi, '
-        'belajar, bekerja, dan mencari informasi. Dalam '
-        'pembelajaran, teknologi dapat digunakan untuk '
-        'mengakses materi, menonton video edukasi, dan '
-        'mengerjakan latihan soal.',
-    'ikon': Icons.lightbulb_rounded,
-  },
-  {
-    'judul': 'Menggunakan Teknologi dengan Bijak',
-    'isi':
-        'Teknologi harus digunakan secara bijak dan '
-        'bertanggung jawab. Gunakan perangkat untuk '
-        'kegiatan yang bermanfaat, periksa kebenaran '
-        'informasi, dan jaga privasi saat menggunakan internet.',
-    'ikon': Icons.verified_user_rounded,
-  },
-];
+// REVISI 25: Daftar slide mengikuti subbab yang dipilih
+late final List<Map<String, dynamic>> _slides;
+
+  // REVISI 26: Memilih materi sesuai subbab
+  List<Map<String, dynamic>> _buatSlides(String judul) {
+    switch (judul) {
+      case 'Pengenalan Teknologi':
+        return [
+          {
+            'judul': 'Pengertian Teknologi',
+            'isi':
+                'Teknologi adalah penerapan ilmu pengetahuan '
+                'untuk membantu manusia menyelesaikan pekerjaan '
+                'dan memenuhi kebutuhan. Contohnya komputer, '
+                'smartphone, dan internet.',
+            'ikon': Icons.devices_rounded,
+          },
+          {
+            'judul': 'Contoh Teknologi di Sekitar Kita',
+            'isi':
+                'Smartphone membantu komunikasi, komputer '
+                'membantu mengerjakan tugas, dan mesin ATM '
+                'membantu melakukan transaksi perbankan.',
+            'ikon': Icons.phone_android_rounded,
+          },
+          {
+            'jenis': 'aktivitas',
+            'judul': 'Aktivitas 1: Mengenal Teknologi',
+            'isi':
+                'Manakah contoh teknologi yang digunakan '
+                'untuk berkomunikasi jarak jauh?',
+            'pilihan': [
+              'Smartphone',
+              'Penggaris',
+              'Buku tulis',
+              'Pensil',
+            ],
+            'jawabanBenar': 0,
+            'ikon': Icons.quiz_rounded,
+          },
+          {
+            'judul': 'Manfaat Teknologi',
+            'isi':
+                'Teknologi membantu manusia belajar, bekerja, '
+                'berkomunikasi, dan mencari informasi. Teknologi '
+                'perlu digunakan secara bijak dan bertanggung jawab.',
+            'ikon': Icons.lightbulb_rounded,
+          },
+          {
+            'judul': 'Menggunakan Teknologi dengan Bijak',
+            'isi':
+                'Periksa kebenaran informasi, jaga data pribadi, '
+                'dan gunakan perangkat untuk kegiatan yang '
+                'bermanfaat.',
+            'ikon': Icons.verified_user_rounded,
+          },
+        ];
+
+      case 'Sistem Komputer':
+        return [
+          {
+            'judul': 'Pengertian Sistem Komputer',
+            'isi':
+                'Sistem komputer terdiri dari komponen yang '
+                'bekerja sama untuk mengolah data menjadi informasi. '
+                'Komponen utamanya meliputi hardware, software, '
+                'dan brainware.',
+            'ikon': Icons.computer_rounded,
+          },
+          {
+            'judul': 'Hardware (Perangkat Keras)',
+            'isi':
+                'Hardware adalah bagian fisik komputer yang '
+                'dapat dilihat atau disentuh, seperti monitor, '
+                'keyboard, mouse, dan printer.',
+            'ikon': Icons.desktop_windows_rounded,
+          },
+          {
+            'jenis': 'aktivitas',
+            'judul': 'Aktivitas: Mengenal Hardware',
+            'isi': 'Manakah yang termasuk perangkat keras?',
+            'pilihan': [
+              'Keyboard',
+              'Microsoft Word',
+              'Windows',
+              'Google Chrome',
+            ],
+            'jawabanBenar': 0,
+            'ikon': Icons.quiz_rounded,
+          },
+          {
+            'judul': 'Software (Perangkat Lunak)',
+            'isi':
+                'Software adalah program atau instruksi yang '
+                'digunakan komputer untuk menjalankan tugas. '
+                'Contohnya sistem operasi dan aplikasi pengolah kata.',
+            'ikon': Icons.apps_rounded,
+          },
+          {
+            'judul': 'Brainware (Pengguna)',
+            'isi':
+                'Brainware adalah orang yang menggunakan atau '
+                'mengelola komputer, misalnya siswa, guru, '
+                'programmer, dan teknisi.',
+            'ikon': Icons.person_rounded,
+          },
+        ];
+
+      case 'Jaringan dan Internet':
+        return [
+          {
+            'judul': 'Pengertian Jaringan Komputer',
+            'isi':
+                'Jaringan komputer menghubungkan dua atau lebih '
+                'perangkat agar dapat berkomunikasi dan berbagi data.',
+            'ikon': Icons.lan_rounded,
+          },
+          {
+            'judul': 'Mengenal Internet',
+            'isi':
+                'Internet menghubungkan banyak jaringan komputer '
+                'sehingga pengguna dapat mencari informasi, '
+                'berkomunikasi, dan mengakses layanan digital.',
+            'ikon': Icons.language_rounded,
+          },
+          {
+            'jenis': 'aktivitas',
+            'judul': 'Aktivitas: Jaringan Komputer',
+            'isi':
+                'Jaringan yang biasanya menghubungkan komputer '
+                'dalam satu laboratorium sekolah disebut apa?',
+            'pilihan': ['LAN', 'WAN', 'MAN', 'PAN'],
+            'jawabanBenar': 0,
+            'ikon': Icons.quiz_rounded,
+          },
+        ];
+
+      case 'Keamanan Digital':
+        return [
+          {
+            'judul': 'Pengertian Keamanan Digital',
+            'isi':
+                'Keamanan digital merupakan upaya melindungi '
+                'perangkat, akun, dan informasi pribadi dari '
+                'akses atau tindakan yang tidak diinginkan.',
+            'ikon': Icons.security_rounded,
+          },
+          {
+            'judul': 'Melindungi Akun',
+            'isi':
+                'Gunakan kata sandi yang kuat dan berbeda untuk '
+                'setiap akun. Jangan membagikan kata sandi atau '
+                'kode OTP kepada orang lain.',
+            'ikon': Icons.lock_rounded,
+          },
+          {
+            'jenis': 'aktivitas',
+            'judul': 'Aktivitas: Keamanan Akun',
+            'isi':
+                'Apa tindakan yang paling aman untuk melindungi akun?',
+            'pilihan': [
+              'Membagikan kata sandi kepada teman',
+              'Menggunakan kata sandi yang kuat',
+              'Memakai kata sandi 123456',
+              'Membagikan kode OTP',
+            ],
+            'jawabanBenar': 1,
+            'ikon': Icons.quiz_rounded,
+          },
+        ];
+
+      case 'Artificial Intelligence':
+      case 'Artificial Intelligence (AI)':
+        return [
+          {
+            'judul': 'Pengertian Artificial Intelligence',
+            'isi':
+                'Artificial Intelligence (AI) atau kecerdasan '
+                'buatan merupakan teknologi yang memungkinkan '
+                'komputer melakukan tugas tertentu, seperti '
+                'mengenali pola dan memahami bahasa.',
+            'ikon': Icons.smart_toy_rounded,
+          },
+          {
+            'judul': 'Contoh Penggunaan AI',
+            'isi':
+                'AI dapat digunakan pada chatbot, penerjemah '
+                'otomatis, sistem rekomendasi, dan pengenalan suara.',
+            'ikon': Icons.psychology_rounded,
+          },
+          {
+            'jenis': 'aktivitas',
+            'judul': 'Aktivitas: Mengenal AI',
+            'isi': 'Manakah contoh penggunaan AI?',
+            'pilihan': [
+              'Chatbot yang menjawab pertanyaan',
+              'Penggaris biasa',
+              'Buku cetak',
+              'Kursi belajar',
+            ],
+            'jawabanBenar': 0,
+            'ikon': Icons.quiz_rounded,
+          },
+        ];
+
+      default:
+        return [
+          {
+            'judul': 'Materi Belum Tersedia',
+            'isi':
+                'Materi untuk subbab ini sedang disiapkan.',
+            'ikon': Icons.menu_book_rounded,
+          },
+        ];
+    }
+  }
+
 
 
   @override
