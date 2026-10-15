@@ -1,15 +1,62 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../theme/app_theme.dart';
 import '../widgets/menu_item.dart';
 import '../widgets/menu_card.dart';
 import '../widgets/lanjut_card.dart';
 import 'materi_page.dart';
+import '../models/materi_model.dart';
 import 'video_page.dart';
 import 'kuis_page.dart';
+import 'materi_belajar_page.dart';
 
-class BerandaPage extends StatelessWidget {
+class BerandaPage extends StatefulWidget {
   const BerandaPage({super.key});
+
+  @override
+  State<BerandaPage> createState() => _BerandaPageState();
+}
+
+class _BerandaPageState extends State<BerandaPage> {
+  String _materiTerakhir = 'Sistem Komputer';
+  int _slideTerakhir = 0;
+
+  double get _progresBelajar {
+    return (_slideTerakhir + 1) / 5;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _muatProgres();
+  }
+
+  Future<void> _muatProgres() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    if (!mounted) return;
+
+    setState(() {
+      _materiTerakhir = prefs.getString('materiTerakhir') ?? 'Sistem Komputer';
+      _slideTerakhir = prefs.getInt('slideTerakhir') ?? 0;
+    });
+  }
+
+  void _lanjutBelajar() {
+    final materi = daftarMateri.firstWhere(
+      (item) => item.judul == _materiTerakhir,
+      orElse: () => daftarMateri[1],
+    );
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) =>
+            MateriBelajarPage(materi: materi, initialSlide: _slideTerakhir),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -175,15 +222,10 @@ class BerandaPage extends StatelessWidget {
               const SizedBox(height: 12),
 
               LanjutCard(
-                title: 'Sistem Komputer',
-                subtitle: 'Perangkat keras dan perangkat lunak',
-                progress: 0.65,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const MateriPage()),
-                  );
-                },
+                title: _materiTerakhir,
+                subtitle: 'Lanjutkan materi yang terakhir dipelajari',
+                progress: _progresBelajar,
+                onTap: _lanjutBelajar,
               ),
 
               const SizedBox(height: 26),

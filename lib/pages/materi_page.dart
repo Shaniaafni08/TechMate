@@ -5,6 +5,7 @@ import '../models/materi_model.dart';
 import '../widgets/gradient_scaffold.dart';
 import 'detail_materi_page.dart';
 
+
 class MateriPage extends StatelessWidget {
   const MateriPage({super.key});
 

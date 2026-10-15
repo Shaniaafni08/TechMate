@@ -12,8 +12,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 class MateriBelajarPage extends StatefulWidget {
   // REVISI 10: Menyimpan topik yang dipilih pengguna
   final MateriModel materi;
+  final int initialSlide;
 
-  const MateriBelajarPage({super.key, required this.materi});
+  const MateriBelajarPage({
+    super.key,
+    required this.materi,
+    this.initialSlide = 0,
+  });
 
   @override
   State<MateriBelajarPage> createState() => _MateriBelajarPageState();
@@ -28,13 +33,25 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
   }
 
   // REVISI 25: Memuat slide sesuai topik pilihan
-@override
-void initState() {
-  super.initState();
-  _slides = _buatSlides(widget.materi.judul);
-}
+  @override
+  void initState() {
+    super.initState();
+    _slides = _buatSlides(widget.materi.judul);
+    _slideAktif = widget.initialSlide.clamp(0, _slides.length - 1).toInt();
+    _simpanProgres();
+  }
 
   int _slideAktif = 0;
+
+  // REVISI 33A: Menyimpan posisi slide terakhir
+  Future<void> _simpanProgres() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString('materiTerakhir', widget.materi.judul);
+
+    await prefs.setInt('slideTerakhir', _slideAktif);
+  }
+
   // Menimpan jawaban aktivitas
   int? _jawabanDipilih;
   bool _aktivitasSelesai = false;
@@ -46,8 +63,8 @@ void initState() {
     await _audioPlayer.play(AssetSource(namaFile));
   }
 
-// REVISI 25: Daftar slide mengikuti subbab yang dipilih
-late final List<Map<String, dynamic>> _slides;
+  // REVISI 25: Daftar slide mengikuti subbab yang dipilih
+  late final List<Map<String, dynamic>> _slides;
 
   // REVISI 26: Memilih materi sesuai subbab
   List<Map<String, dynamic>> _buatSlides(String judul) {
@@ -77,12 +94,7 @@ late final List<Map<String, dynamic>> _slides;
             'isi':
                 'Manakah contoh teknologi yang digunakan '
                 'untuk berkomunikasi jarak jauh?',
-            'pilihan': [
-              'Smartphone',
-              'Penggaris',
-              'Buku tulis',
-              'Pensil',
-            ],
+            'pilihan': ['Smartphone', 'Penggaris', 'Buku tulis', 'Pensil'],
             'jawabanBenar': 0,
             'ikon': Icons.quiz_rounded,
           },
@@ -204,8 +216,7 @@ late final List<Map<String, dynamic>> _slides;
           {
             'jenis': 'aktivitas',
             'judul': 'Aktivitas: Keamanan Akun',
-            'isi':
-                'Apa tindakan yang paling aman untuk melindungi akun?',
+            'isi': 'Apa tindakan yang paling aman untuk melindungi akun?',
             'pilihan': [
               'Membagikan kata sandi kepada teman',
               'Menggunakan kata sandi yang kuat',
@@ -255,15 +266,12 @@ late final List<Map<String, dynamic>> _slides;
         return [
           {
             'judul': 'Materi Belum Tersedia',
-            'isi':
-                'Materi untuk subbab ini sedang disiapkan.',
+            'isi': 'Materi untuk subbab ini sedang disiapkan.',
             'ikon': Icons.menu_book_rounded,
           },
         ];
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -441,6 +449,7 @@ late final List<Map<String, dynamic>> _slides;
                                     _jawabanDipilih = null;
                                     _aktivitasSelesai = false;
                                   });
+                                  await _simpanProgres();
                                 } else if (!benar) {
                                   setState(() {
                                     _jawabanDipilih = null;
@@ -519,14 +528,21 @@ late final List<Map<String, dynamic>> _slides;
                 const SizedBox(width: 12),
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (_slideAktif < _slides.length - 1) {
                         setState(() {
                           _slideAktif++;
                           _jawabanDipilih = null;
                           _aktivitasSelesai = false;
                         });
+
+                        await _simpanProgres();
                       } else {
+                        final prefs = await SharedPreferences.getInstance();
+                        await prefs.setBool(
+                          'materiSelesai_${widget.materi.judul}',
+                          true,
+                        );
                         Navigator.popUntil(context, (route) => route.isFirst);
                       }
                     },
