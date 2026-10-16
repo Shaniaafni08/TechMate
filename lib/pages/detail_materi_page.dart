@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../theme/app_theme.dart';
 import '../models/materi_model.dart';
@@ -126,12 +127,16 @@ class DetailMateriPage extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
-                // REVISI: Tombol Mulai Belajar diarahkan ke halaman pembelajaran
-                onPressed: () {
+                onPressed: () async {
+                  final prefs = await SharedPreferences.getInstance();
+                  await prefs.setString('materiTerakhir', materi.judul);
+                  await prefs.setInt('slideTerakhir', 0);
+
+                  if (!context.mounted) return;
+
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      // REVISI 12: Mengirim data topik terpilih
                       builder: (_) => MateriBelajarPage(materi: materi),
                     ),
                   );

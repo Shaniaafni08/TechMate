@@ -514,12 +514,13 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
                 Expanded(
                   child: OutlinedButton(
                     onPressed: _slideAktif > 0
-                        ? () {
+                        ? () async {
                             setState(() {
                               _slideAktif--;
                               _jawabanDipilih = null;
                               _aktivitasSelesai = false;
                             });
+                            await _simpanProgres();
                           }
                         : null,
                     child: const Text('Kembali'),

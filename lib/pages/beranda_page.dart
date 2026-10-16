@@ -253,6 +253,7 @@ class _BerandaPageState extends State<BerandaPage> {
                           context,
                           MaterialPageRoute(builder: (_) => const MateriPage()),
                         );
+                        _muatProgres();
                       } else if (item.title == 'Video') {
                         Navigator.push(
                           context,
