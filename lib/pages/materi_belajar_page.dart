@@ -63,6 +63,50 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
     await _audioPlayer.play(AssetSource(namaFile));
   }
 
+  Future<void> _jawabTrueFalse(int jawaban) async {
+    if (_aktivitasSelesai) return;
+
+    final benar =
+        jawaban == (_slides[_slideAktif]['jawabanBenar'] as int);
+
+    await _putarEfek(benar ? 'correct.mp3' : 'wrong.mp3');
+
+    if (!mounted) return;
+
+    setState(() {
+      _jawabanDipilih = jawaban;
+      _aktivitasSelesai = true;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          benar
+              ? '🎉 Benar! Hebat, lanjut ke materi berikutnya!'
+              : 'Belum tepat, tetap semangat ya!',
+        ),
+        duration: const Duration(milliseconds: 900),
+      ),
+    );
+
+    await Future.delayed(const Duration(milliseconds: 1200));
+
+    if (!mounted) return;
+
+    if (benar && _slideAktif < _slides.length - 1) {
+      setState(() {
+        _slideAktif++;
+        _jawabanDipilih = null;
+        _aktivitasSelesai = false;
+      });
+      await _simpanProgres();
+    } else if (!benar) {
+      setState(() {
+        _jawabanDipilih = null;
+        _aktivitasSelesai = false;
+      });
+    }
+  }
   // REVISI 25: Daftar slide mengikuti subbab yang dipilih
   late final List<Map<String, dynamic>> _slides;
 
@@ -106,6 +150,15 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
                 'perlu digunakan secara bijak dan bertanggung jawab.',
             'ikon': Icons.lightbulb_rounded,
           },
+
+          {
+            'jenis': 'trueFalse',
+            'judul': 'Aktivitas 2: Benar atau Salah',
+            'isi': 'Smartphone dapat digunakan untuk berkomunikasi jarak jauh.',
+            'jawabanBenar': 0,
+            'ikon': Icons.fact_check_rounded,
+          },
+
           {
             'judul': 'Menggunakan Teknologi dengan Bijak',
             'isi':
@@ -362,11 +415,14 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
                 ),
               ),
 
-              ...List.generate(
-                (_slides[_slideAktif]['pilihan'] as List<String>).length,
-                (index) {
-                  final pilihan =
-                      (_slides[_slideAktif]['pilihan'] as List<String>)[index];
+          
+
+  ...List.generate(
+    (_slides[_slideAktif]['pilihan'] as List<String>).length,
+    (index) {
+      final pilihan =
+          (_slides[_slideAktif]['pilihan'] as List<String>)[index];
+
                   // REVISI 19: Menentukan warna feedback jawaban
                   final jawabanBenar =
                       _slides[_slideAktif]['jawabanBenar'] as int;
@@ -463,6 +519,7 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
                   );
                 },
               ),
+              
 
               if (_aktivitasSelesai)
                 Text(
@@ -477,6 +534,32 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+            ],
+
+            // Aktivitas Benar atau Salah
+            if (_slides[_slideAktif]['jenis'] == 'trueFalse') ...[
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: _aktivitasSelesai
+                          ? null
+                          : () => _jawabTrueFalse(0),
+                      child: const Text('TRUE'),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: _aktivitasSelesai
+                          ? null
+                          : () => _jawabTrueFalse(1),
+                      child: const Text('FALSE'),
+                    ),
+                  ),
+                ],
+              ),
             ],
 
             const SizedBox(height: 24),
