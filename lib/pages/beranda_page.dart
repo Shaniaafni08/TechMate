@@ -32,16 +32,22 @@ class _BerandaPageState extends State<BerandaPage> {
     _muatProgres();
   }
 
-  Future<void> _muatProgres() async {
-    final prefs = await SharedPreferences.getInstance();
+Future<void> _muatProgres() async {
+  final prefs = await SharedPreferences.getInstance();
 
-    if (!mounted) return;
+  final materi = prefs.getString('materiTerakhir');
+  final slide = prefs.getInt('slideTerakhir');
 
-    setState(() {
-      _materiTerakhir = prefs.getString('materiTerakhir') ?? 'Sistem Komputer';
-      _slideTerakhir = prefs.getInt('slideTerakhir') ?? 0;
-    });
-  }
+  debugPrint('MATERI TERSIMPAN: $materi');
+  debugPrint('SLIDE TERSIMPAN: $slide');
+
+  if (!mounted) return;
+
+  setState(() {
+    _materiTerakhir = materi ?? 'Sistem Komputer';
+    _slideTerakhir = slide ?? 0;
+  });
+}
 
   void _lanjutBelajar() {
     final materi = daftarMateri.firstWhere(
@@ -252,8 +258,9 @@ class _BerandaPageState extends State<BerandaPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (_) => const MateriPage()),
-                        );
+                        ).then((_) {
                         _muatProgres();
+                        });
                       } else if (item.title == 'Video') {
                         Navigator.push(
                           context,

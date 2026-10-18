@@ -38,19 +38,20 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
     super.initState();
     _slides = _buatSlides(widget.materi.judul);
     _slideAktif = widget.initialSlide.clamp(0, _slides.length - 1).toInt();
-    _simpanProgres();
   }
 
   int _slideAktif = 0;
 
   // REVISI 33A: Menyimpan posisi slide terakhir
-  Future<void> _simpanProgres() async {
-    final prefs = await SharedPreferences.getInstance();
+Future<void> _simpanProgres() async {
+  final prefs = await SharedPreferences.getInstance();
 
-    await prefs.setString('materiTerakhir', widget.materi.judul);
+  await prefs.setString('materiTerakhir', widget.materi.judul);
+  await prefs.setInt('slideTerakhir', _slideAktif);
 
-    await prefs.setInt('slideTerakhir', _slideAktif);
-  }
+  debugPrint('MENYIMPAN MATERI: ${widget.materi.judul}');
+  debugPrint('MENYIMPAN SLIDE: $_slideAktif');
+}
 
   // Menimpan jawaban aktivitas
   int? _jawabanDipilih;
