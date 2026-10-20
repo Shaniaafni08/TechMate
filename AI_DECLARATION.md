@@ -41,7 +41,7 @@ Peran saya meliputi:
 Dengan demikian, proses pengembangan dilakukan melalui kerja sama antara arahan yang saya berikan, bantuan AI, dan pengujian terhadap aplikasi yang sedang dibuat.
 
 ## 5. Studi Kasus Penggunaan AI
-Studi Kasus 1: Pengembangan Fitur Progres Belajar
+1. Studi Kasus 1: Pengembangan Fitur Progres Belajar
 
 Masalah atau kebutuhan:
 Saya ingin aplikasi TechMate dapat menyimpan materi dan slide terakhir yang dipelajari, sehingga pengguna dapat melanjutkan pembelajaran tanpa harus mencari kembali dari awal.
@@ -55,7 +55,7 @@ AI membantu memberikan contoh kode untuk menyimpan dan membaca data progres meng
 Penyesuaian dan pengujian:
 Kode disesuaikan dengan struktur halaman dan kebutuhan aplikasi TechMate. Saya kemudian menjalankan aplikasi, membuka materi, berpindah slide, kembali ke Beranda, dan memeriksa apakah progres berubah. Pengujian setelah aplikasi ditutup dan dibuka kembali juga diperlukan untuk memastikan penyimpanan berjalan dengan benar.
 
-### Studi Kasus 2: Pengembangan Materi dan Kuis Interaktif
+2. Studi Kasus 2: Pengembangan Materi dan Kuis Interaktif
 Masalah atau kebutuhan:
 Saya ingin materi TechMate tidak hanya berisi penjelasan, tetapi juga memiliki aktivitas interaktif agar siswa dapat menguji pemahamannya.
 
