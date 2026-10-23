@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/app_theme.dart';
 import '../widgets/gradient_scaffold.dart';
+import 'pemutar_video_page.dart';
 
 class VideoPage extends StatelessWidget {
   const VideoPage({super.key});
@@ -71,11 +72,16 @@ class _VideoCard extends StatelessWidget {
     return InkWell(
       borderRadius: BorderRadius.circular(20),
       onTap: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Membuka video: $title'),
-          ),
-        );
+        if (title == 'Pengenalan Teknologi') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const PemutarVideoPage()),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Video $title belum tersedia.')),
+          );
+        }
       },
       child: Container(
         padding: const EdgeInsets.all(16),
@@ -102,11 +108,7 @@ class _VideoCard extends StatelessWidget {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  Icon(
-                    icon,
-                    color: color,
-                    size: 32,
-                  ),
+                  Icon(icon, color: color, size: 32),
                   Container(
                     width: 25,
                     height: 25,
