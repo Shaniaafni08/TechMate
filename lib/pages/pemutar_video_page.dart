@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
+
 class PemutarVideoPage extends StatefulWidget {
-  const PemutarVideoPage({super.key});
+  final String judul;
+  final String assetPath;
+
+  const PemutarVideoPage({
+    super.key,
+    required this.judul,
+    required this.assetPath,
+  });
 
   @override
   State<PemutarVideoPage> createState() => _PemutarVideoPageState();
@@ -17,7 +25,7 @@ class _PemutarVideoPageState extends State<PemutarVideoPage> {
     super.initState();
 
     _controller = VideoPlayerController.asset(
-      'assets/videos/pengenalan_teknologi.mp4',
+      widget.assetPath,
     );
 
     _inisialisasiVideo = _controller.initialize();
@@ -35,9 +43,9 @@ Widget build(BuildContext context) {
   return Scaffold(
     backgroundColor: const Color(0xFFF4F5FA),
     appBar: AppBar(
-      title: const Text(
-        'Video Pembelajaran',
-        style: TextStyle(fontWeight: FontWeight.bold),
+      title: Text(
+        widget.judul,
+        style: const TextStyle(fontWeight: FontWeight.bold),
       ),
       backgroundColor: const Color(0xFF6A35D9),
       foregroundColor: Colors.white,
@@ -63,8 +71,8 @@ Widget build(BuildContext context) {
         return ListView(
           padding: const EdgeInsets.all(20),
           children: [
-            const Text(
-              'Pengenalan Teknologi',
+            Text(
+              widget.judul,
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,

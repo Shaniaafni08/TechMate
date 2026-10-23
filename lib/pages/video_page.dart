@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../widgets/gradient_scaffold.dart';
 import 'pemutar_video_page.dart';
+import 'daftar_video_page.dart';
 
 class VideoPage extends StatelessWidget {
   const VideoPage({super.key});
@@ -75,7 +76,7 @@ class _VideoCard extends StatelessWidget {
         if (title == 'Pengenalan Teknologi') {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (_) => const PemutarVideoPage()),
+            MaterialPageRoute(builder: (_) => DaftarVideoPage()),
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
