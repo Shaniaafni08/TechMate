@@ -23,7 +23,7 @@ class _BerandaPageState extends State<BerandaPage> {
   int _slideTerakhir = 0;
 
   double get _progresBelajar {
-    return (_slideTerakhir + 1) / 5;
+    return ((_slideTerakhir + 1) / 5).clamp(0.0, 1.0);
   }
 
   @override
@@ -32,22 +32,22 @@ class _BerandaPageState extends State<BerandaPage> {
     _muatProgres();
   }
 
-Future<void> _muatProgres() async {
-  final prefs = await SharedPreferences.getInstance();
+  Future<void> _muatProgres() async {
+    final prefs = await SharedPreferences.getInstance();
 
-  final materi = prefs.getString('materiTerakhir');
-  final slide = prefs.getInt('slideTerakhir');
+    final materi = prefs.getString('materiTerakhir');
+    final slide = prefs.getInt('slideTerakhir');
 
-  debugPrint('MATERI TERSIMPAN: $materi');
-  debugPrint('SLIDE TERSIMPAN: $slide');
+    debugPrint('MATERI TERSIMPAN: $materi');
+    debugPrint('SLIDE TERSIMPAN: $slide');
 
-  if (!mounted) return;
+    if (!mounted) return;
 
-  setState(() {
-    _materiTerakhir = materi ?? 'Sistem Komputer';
-    _slideTerakhir = slide ?? 0;
-  });
-}
+    setState(() {
+      _materiTerakhir = materi ?? 'Sistem Komputer';
+      _slideTerakhir = slide ?? 0;
+    });
+  }
 
   void _lanjutBelajar() {
     final materi = daftarMateri.firstWhere(
@@ -90,7 +90,7 @@ Future<void> _muatProgres() async {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -118,7 +118,7 @@ Future<void> _muatProgres() async {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Selamat Datang! 👋',
+                          'Hai, Sobat TechMate! 👋',
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -127,7 +127,7 @@ Future<void> _muatProgres() async {
                         ),
                         SizedBox(height: 3),
                         Text(
-                          'Siap belajar hari ini?',
+                          'Yuk, belajar teknologi hari ini!',
                           style: TextStyle(
                             fontSize: 13,
                             color: AppColors.textGrey,
@@ -152,63 +152,126 @@ Future<void> _muatProgres() async {
               // Banner
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.all(18),
                 decoration: BoxDecoration(
                   gradient: AppColors.gradient,
-                  borderRadius: BorderRadius.circular(22),
+                  borderRadius: BorderRadius.circular(26),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.purple.withOpacity(0.18),
-                      blurRadius: 15,
-                      offset: const Offset(0, 7),
+                      color: AppColors.purple.withOpacity(0.22),
+                      blurRadius: 20,
+                      offset: const Offset(0, 8),
                     ),
                   ],
                 ),
 
-                child: Row(
+                child: Stack(
+                  clipBehavior: Clip.none,
                   children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Belajar TIK Jadi Lebih Interaktif 🚀',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              height: 1.2,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          const Text(
-                            'Jelajahi materi, video, dan kuis untuk meningkatkan pemahamanmu.',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500,
-                              height: 1.4,
-                            ),
-                          ),
-                        ],
+                    // Lingkaran dekoratif
+                    Positioned(
+                      top: -35,
+                      right: 65,
+                      child: Container(
+                        width: 100,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white.withOpacity(0.08),
+                        ),
                       ),
                     ),
 
-                    const SizedBox(width: 12),
+                    Positioned(
+                      bottom: -45,
+                      right: 100,
+                      child: Container(
+                        width: 120,
+                        height: 120,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white.withOpacity(0.08),
+                        ),
+                      ),
+                    ),
 
-                    // REVISI 1: ilustrasi komputer sederhana
-                    Container(
-                      width: 75,
-                      height: 75,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.18),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: const Icon(
-                        Icons.computer_rounded,
-                        color: Colors.white,
-                        size: 42,
-                      ),
+                    // Isi banner
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Belajar TIK Jadi Lebih Seru! 🚀',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  height: 1.2,
+                                ),
+                              ),
+
+                              const SizedBox(height: 10),
+
+                              const Text(
+                                'Jelajahi dunia teknologi lewat materi, video dan kuis.',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w500,
+                                  height: 1.4,
+                                ),
+                              ),
+
+                              const SizedBox(height: 12),
+
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 6,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.18),
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(
+                                    color: Colors.white.withOpacity(0.25),
+                                  ),
+                                ),
+                                child: const Text(
+                                  '📚 Belajar • Eksplorasi • Berkarya',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        const SizedBox(width: 12),
+
+                        // Ikon komputer
+                        Container(
+                          width: 82,
+                          height: 82,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.18),
+                            borderRadius: BorderRadius.circular(24),
+                            border: Border.all(
+                              color: Colors.white.withOpacity(0.25),
+                              width: 1.5,
+                            ),
+                          ),
+                          child: const Icon(
+                            Icons.computer_rounded,
+                            color: Colors.white,
+                            size: 48,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -250,7 +313,7 @@ Future<void> _muatProgres() async {
               // REVISI 3: Menu Utama dibuat menjadi 1 kolom dengan card yang lebih ringkas
               ...menu.map(
                 (item) => Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
+                  padding: const EdgeInsets.only(bottom: 12),
                   child: MenuCard(
                     item: item,
                     onTap: () {
@@ -259,7 +322,7 @@ Future<void> _muatProgres() async {
                           context,
                           MaterialPageRoute(builder: (_) => const MateriPage()),
                         ).then((_) {
-                        _muatProgres();
+                          _muatProgres();
                         });
                       } else if (item.title == 'Video') {
                         Navigator.push(
