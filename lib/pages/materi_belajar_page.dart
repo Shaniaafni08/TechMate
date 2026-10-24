@@ -43,15 +43,15 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
   int _slideAktif = 0;
 
   // REVISI 33A: Menyimpan posisi slide terakhir
-Future<void> _simpanProgres() async {
-  final prefs = await SharedPreferences.getInstance();
+  Future<void> _simpanProgres() async {
+    final prefs = await SharedPreferences.getInstance();
 
-  await prefs.setString('materiTerakhir', widget.materi.judul);
-  await prefs.setInt('slideTerakhir', _slideAktif);
+    await prefs.setString('materiTerakhir', widget.materi.judul);
+    await prefs.setInt('slideTerakhir', _slideAktif);
 
-  debugPrint('MENYIMPAN MATERI: ${widget.materi.judul}');
-  debugPrint('MENYIMPAN SLIDE: $_slideAktif');
-}
+    debugPrint('MENYIMPAN MATERI: ${widget.materi.judul}');
+    debugPrint('MENYIMPAN SLIDE: $_slideAktif');
+  }
 
   // Menimpan jawaban aktivitas
   int? _jawabanDipilih;
@@ -60,24 +60,31 @@ Future<void> _simpanProgres() async {
   final AudioPlayer _audioPlayer = AudioPlayer();
 
   Future<void> _putarEfek(String namaFile) async {
-    await _audioPlayer.stop();
-    await _audioPlayer.play(AssetSource(namaFile));
+    try {
+      await _audioPlayer.stop();
+      await _audioPlayer.play(AssetSource('audio/$namaFile'));
+    } catch (e) {
+      debugPrint('Gagal memutar suara $namaFile: $e');
+    }
   }
 
   Future<void> _jawabTrueFalse(int jawaban) async {
     if (_aktivitasSelesai) return;
 
-    final benar =
-        jawaban == (_slides[_slideAktif]['jawabanBenar'] as int);
-
-    await _putarEfek(benar ? 'correct.mp3' : 'wrong.mp3');
-
-    if (!mounted) return;
+    final benar = jawaban == (_slides[_slideAktif]['jawabanBenar'] as int);
 
     setState(() {
       _jawabanDipilih = jawaban;
       _aktivitasSelesai = true;
     });
+
+    try {
+      await _putarEfek(benar ? 'correct.mp3' : 'wrong.mp3');
+    } catch (e) {
+      debugPrint('Gagal memutar suara: $e');
+    }
+
+    if (!mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -108,6 +115,7 @@ Future<void> _simpanProgres() async {
       });
     }
   }
+
   // REVISI 25: Daftar slide mengikuti subbab yang dipilih
   late final List<Map<String, dynamic>> _slides;
 
@@ -416,13 +424,11 @@ Future<void> _simpanProgres() async {
                 ),
               ),
 
-          
-
-  ...List.generate(
-    (_slides[_slideAktif]['pilihan'] as List<String>).length,
-    (index) {
-      final pilihan =
-          (_slides[_slideAktif]['pilihan'] as List<String>)[index];
+              ...List.generate(
+                (_slides[_slideAktif]['pilihan'] as List<String>).length,
+                (index) {
+                  final pilihan =
+                      (_slides[_slideAktif]['pilihan'] as List<String>)[index];
 
                   // REVISI 19: Menentukan warna feedback jawaban
                   final jawabanBenar =
@@ -466,22 +472,30 @@ Future<void> _simpanProgres() async {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        // Tempel kode onPressed yang baru di sini
+
                         onPressed: _aktivitasSelesai
                             ? null
                             : () async {
                                 final benar =
                                     index ==
                                     _slides[_slideAktif]['jawabanBenar'];
-                                // REVISI: Efek suara sesuai jawaban
-                                await _putarEfek(
-                                  benar ? 'correct.mp3' : 'wrong.mp3',
-                                );
 
+                                // Tampilkan respons tombol terlebih dahulu
                                 setState(() {
                                   _jawabanDipilih = index;
                                   _aktivitasSelesai = true;
                                 });
+
+                                // Efek suara tidak boleh menghambat respons tombol
+                                try {
+                                  await _putarEfek(
+                                    benar ? 'correct.mp3' : 'wrong.mp3',
+                                  );
+                                } catch (e) {
+                                  debugPrint('Efek suara gagal diputar: $e');
+                                }
+
+                                if (!mounted) return;
 
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
@@ -514,13 +528,13 @@ Future<void> _simpanProgres() async {
                                   });
                                 }
                               },
+
                         child: Text(pilihan),
                       ),
                     ),
                   );
                 },
               ),
-              
 
               if (_aktivitasSelesai)
                 Text(
