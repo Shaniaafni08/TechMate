@@ -56,6 +56,7 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
   // Menimpan jawaban aktivitas
   int? _jawabanDipilih;
   bool _aktivitasSelesai = false;
+  bool _popUpAktivitasTampil = false;
   // REVISI: Pemutar efek suara aktivitas
   final AudioPlayer _audioPlayer = AudioPlayer();
 
@@ -113,6 +114,115 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
         _jawabanDipilih = null;
         _aktivitasSelesai = false;
       });
+    }
+  }
+
+  Future<void> _tampilkanPopUpAktivitas() async {
+    if (_popUpAktivitasTampil) return;
+
+    _popUpAktivitasTampil = true;
+
+    final aktivitas = _slides[_slideAktif];
+    int? jawabanDipilih;
+    String? pesan;
+
+    final pilihan = aktivitas['jenis'] == 'trueFalse'
+        ? ['TRUE', 'FALSE']
+        : aktivitas['pilihan'] as List<String>;
+
+    final hasil = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(22),
+              ),
+              title: const Row(
+                children: [
+                  Icon(Icons.auto_awesome, color: AppColors.purple),
+                  SizedBox(width: 8),
+                  Expanded(child: Text('Aktivitas Interaktif')),
+                ],
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    aktivitas['isi'],
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  ...List.generate(pilihan.length, (index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton(
+                          onPressed: () async {
+                            final benar = index == aktivitas['jawabanBenar'];
+
+                            if (benar) {
+                              await _putarEfek('correct.mp3');
+                              if (dialogContext.mounted) {
+                                Navigator.pop(dialogContext, true);
+                              }
+                            } else {
+                              await _putarEfek('wrong.mp3');
+                              setDialogState(() {
+                                jawabanDipilih = index;
+                                pesan = 'Belum tepat, coba lagi ya! 💪';
+                              });
+                            }
+                          },
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: jawabanDipilih == index
+                                ? Colors.red
+                                : AppColors.purple,
+                          ),
+                          child: Text(
+                            '${String.fromCharCode(65 + index)}. ${pilihan[index]}',
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+
+                  if (pesan != null)
+                    Text(
+                      pesan!,
+                      style: const TextStyle(
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+
+    _popUpAktivitasTampil = false;
+
+    if (!mounted) return;
+
+    if (hasil == true) {
+      setState(() {
+        _slideAktif++;
+        _jawabanDipilih = null;
+        _aktivitasSelesai = false;
+      });
+
+      await _simpanProgres();
     }
   }
 
@@ -366,191 +476,6 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
               ),
             ),
 
-            // REVISI 17: Animasi transisi aktivitas
-            if (_slides[_slideAktif]['jenis'] == 'aktivitas') ...[
-              TweenAnimationBuilder<double>(
-                key: ValueKey('aktivitas-$_slideAktif'),
-                tween: Tween<double>(begin: 0, end: 1),
-                duration: const Duration(milliseconds: 650),
-                curve: Curves.easeOutBack,
-                builder: (context, nilai, child) {
-                  return Opacity(
-                    opacity: nilai.clamp(0.0, 1.0),
-                    child: Transform.translate(
-                      offset: Offset(0, 35 * (1 - nilai)),
-                      child: Transform.scale(
-                        scale: 0.85 + (0.15 * nilai),
-                        child: child,
-                      ),
-                    ),
-                  );
-                },
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF6A35D9), Color(0xFF8D6BE8)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(22),
-                  ),
-                  child: const Column(
-                    children: [
-                      Icon(
-                        Icons.auto_awesome_rounded,
-                        size: 46,
-                        color: Colors.white,
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        'Yuk, uji pemahamanmu!',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 19,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      SizedBox(height: 6),
-                      Text(
-                        'Pilih jawaban terbaik dan kumpulkan poinmu!',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 13, color: Colors.white),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              ...List.generate(
-                (_slides[_slideAktif]['pilihan'] as List<String>).length,
-                (index) {
-                  final pilihan =
-                      (_slides[_slideAktif]['pilihan'] as List<String>)[index];
-
-                  // REVISI 19: Menentukan warna feedback jawaban
-                  final jawabanBenar =
-                      _slides[_slideAktif]['jawabanBenar'] as int;
-
-                  final bool jawabanIniBenar = index == jawabanBenar;
-                  final bool jawabanIniDipilih = index == _jawabanDipilih;
-
-                  final Color warnaJawaban = !_aktivitasSelesai
-                      ? const Color(0xFF6A35D9)
-                      : jawabanIniBenar
-                      ? Colors.green
-                      : jawabanIniDipilih
-                      ? Colors.red
-                      : const Color(0xFF6A35D9);
-
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: SizedBox(
-                      width: double.infinity,
-
-                      child: OutlinedButton(
-                        // REVISI 20: Tampilan dan warna pilihan jawaban
-                        style: OutlinedButton.styleFrom(
-                          backgroundColor:
-                              _aktivitasSelesai &&
-                                  (jawabanIniBenar || jawabanIniDipilih)
-                              ? warnaJawaban.withValues(alpha: 0.12)
-                              : Colors.white,
-                          foregroundColor: warnaJawaban,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 18,
-                            vertical: 16,
-                          ),
-                          side: BorderSide(color: warnaJawaban, width: 1.5),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          textStyle: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-
-                        onPressed: _aktivitasSelesai
-                            ? null
-                            : () async {
-                                final benar =
-                                    index ==
-                                    _slides[_slideAktif]['jawabanBenar'];
-
-                                // Tampilkan respons tombol terlebih dahulu
-                                setState(() {
-                                  _jawabanDipilih = index;
-                                  _aktivitasSelesai = true;
-                                });
-
-                                // Efek suara tidak boleh menghambat respons tombol
-                                try {
-                                  await _putarEfek(
-                                    benar ? 'correct.mp3' : 'wrong.mp3',
-                                  );
-                                } catch (e) {
-                                  debugPrint('Efek suara gagal diputar: $e');
-                                }
-
-                                if (!mounted) return;
-
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      benar
-                                          ? '🎉 Benar! Hebat, lanjut ke materi berikutnya!'
-                                          : 'Belum tepat, tetap semangat ya!',
-                                    ),
-                                    duration: const Duration(milliseconds: 900),
-                                  ),
-                                );
-
-                                await Future.delayed(
-                                  const Duration(milliseconds: 1200),
-                                );
-
-                                if (!mounted) return;
-
-                                if (benar && _slideAktif < _slides.length - 1) {
-                                  setState(() {
-                                    _slideAktif++;
-                                    _jawabanDipilih = null;
-                                    _aktivitasSelesai = false;
-                                  });
-                                  await _simpanProgres();
-                                } else if (!benar) {
-                                  setState(() {
-                                    _jawabanDipilih = null;
-                                    _aktivitasSelesai = false;
-                                  });
-                                }
-                              },
-
-                        child: Text(pilihan),
-                      ),
-                    ),
-                  );
-                },
-              ),
-
-              if (_aktivitasSelesai)
-                Text(
-                  _jawabanDipilih == _slides[_slideAktif]['jawabanBenar']
-                      ? 'Jawaban kamu benar!'
-                      : 'Jawaban kamu belum tepat.',
-                  style: TextStyle(
-                    color:
-                        _jawabanDipilih == _slides[_slideAktif]['jawabanBenar']
-                        ? Colors.green
-                        : Colors.red,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-            ],
-
             // Aktivitas Benar atau Salah
             if (_slides[_slideAktif]['jenis'] == 'trueFalse') ...[
               const SizedBox(height: 16),
@@ -629,19 +554,29 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
                   child: ElevatedButton(
                     onPressed: () async {
                       if (_slideAktif < _slides.length - 1) {
+                        final slideBerikutnya = _slideAktif + 1;
+
                         setState(() {
-                          _slideAktif++;
+                          _slideAktif = slideBerikutnya;
                           _jawabanDipilih = null;
                           _aktivitasSelesai = false;
                         });
 
-                        await _simpanProgres();
+                        final jenis = _slides[_slideAktif]['jenis'];
+
+                        if (jenis == 'aktivitas' || jenis == 'trueFalse') {
+                          await _tampilkanPopUpAktivitas();
+                        } else {
+                          await _simpanProgres();
+                        }
                       } else {
                         final prefs = await SharedPreferences.getInstance();
+
                         await prefs.setBool(
                           'materiSelesai_${widget.materi.judul}',
                           true,
                         );
+
                         Navigator.popUntil(context, (route) => route.isFirst);
                       }
                     },
