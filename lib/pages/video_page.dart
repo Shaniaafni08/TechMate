@@ -73,16 +73,12 @@ class _VideoCard extends StatelessWidget {
     return InkWell(
       borderRadius: BorderRadius.circular(20),
       onTap: () {
-        if (title == 'Pengenalan Teknologi') {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => DaftarVideoPage()),
-          );
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Video $title belum tersedia.')),
-          );
-        }
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => DaftarVideoPage(
+            judulMateri: title,
+          )),
+        );
       },
       child: Container(
         padding: const EdgeInsets.all(16),

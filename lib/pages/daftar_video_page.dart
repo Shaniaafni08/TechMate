@@ -1,9 +1,11 @@
-
 import 'package:flutter/material.dart';
+
 import 'pemutar_video_page.dart';
 
 class DaftarVideoPage extends StatelessWidget {
-  const DaftarVideoPage({super.key});
+  final String judulMateri;
+
+  const DaftarVideoPage({super.key, required this.judulMateri});
 
   static const Color ungu = Color(0xFF6A35D9);
   static const Color biru = Color(0xFF2B7FFF);
@@ -12,20 +14,17 @@ class DaftarVideoPage extends StatelessWidget {
   static const List<Map<String, String>> daftarVideo = [
     {
       'judul': 'Pengertian Teknologi',
-      'deskripsi':
-          'Mengenal pengertian dan konsep dasar teknologi.',
+      'deskripsi': 'Mengenal pengertian dan konsep dasar teknologi.',
       'file': 'assets/videos/pengenalan_teknologi.mp4',
     },
     {
       'judul': 'Perkembangan Teknologi',
-      'deskripsi':
-          'Mempelajari perkembangan teknologi dari masa ke masa.',
+      'deskripsi': 'Mempelajari perkembangan teknologi dari masa ke masa.',
       'file': 'assets/videos/video1.mp4',
     },
     {
       'judul': 'Manfaat Teknologi',
-      'deskripsi':
-          'Mengenal manfaat teknologi dalam kehidupan sehari-hari.',
+      'deskripsi': 'Mengenal manfaat teknologi dalam kehidupan sehari-hari.',
       'file': 'assets/videos/video2.mp4',
     },
   ];
@@ -35,8 +34,8 @@ class DaftarVideoPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: latar,
       appBar: AppBar(
-        title: const Text(
-          'Video Pembelajaran',
+        title: Text(
+          'Video $judulMateri',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         backgroundColor: ungu,
@@ -80,9 +79,9 @@ class DaftarVideoPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 18),
-                const Text(
-                  'Pengenalan Teknologi',
-                  style: TextStyle(
+                Text(
+                  judulMateri,
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 23,
                     fontWeight: FontWeight.bold,
@@ -133,10 +132,7 @@ class DaftarVideoPage extends StatelessWidget {
           const SizedBox(height: 6),
           const Text(
             'Pilih video yang ingin kamu pelajari.',
-            style: TextStyle(
-              fontSize: 13,
-              color: Color(0xFF77778A),
-            ),
+            style: TextStyle(fontSize: 13, color: Color(0xFF77778A)),
           ),
           const SizedBox(height: 16),
 
@@ -168,10 +164,7 @@ class DaftarVideoPage extends StatelessWidget {
                       height: 108,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [
-                            warna,
-                            warna.withOpacity(0.7),
-                          ],
+                          colors: [warna, warna.withOpacity(0.7)],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
@@ -218,8 +211,7 @@ class DaftarVideoPage extends StatelessWidget {
 
                     Expanded(
                       child: Column(
-                        crossAxisAlignment:
-                            CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             video['judul']!,
@@ -246,8 +238,7 @@ class DaftarVideoPage extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (_) =>
-                                        PemutarVideoPage(
+                                    builder: (_) => PemutarVideoPage(
                                       judul: video['judul']!,
                                       assetPath: video['file']!,
                                     ),
@@ -263,13 +254,11 @@ class DaftarVideoPage extends StatelessWidget {
                                 backgroundColor: warna,
                                 foregroundColor: Colors.white,
                                 elevation: 0,
-                                padding:
-                                    const EdgeInsets.symmetric(
+                                padding: const EdgeInsets.symmetric(
                                   horizontal: 12,
                                 ),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.circular(10),
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
                             ),
