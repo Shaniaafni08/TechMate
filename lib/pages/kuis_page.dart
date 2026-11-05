@@ -1,5 +1,5 @@
-
 import 'package:flutter/material.dart';
+
 import '../theme/app_theme.dart';
 import '../widgets/gradient_scaffold.dart';
 
@@ -19,32 +19,19 @@ class _KuisPageState extends State<KuisPage> {
   final List<Map<String, dynamic>> _questions = [
     {
       'question': 'Manakah yang termasuk perangkat keras komputer?',
-      'answers': [
-        'Microsoft Word',
-        'Keyboard',
-        'Google Chrome',
-        'Windows',
-      ],
+      'answers': ['Microsoft Word', 'Keyboard', 'Google Chrome', 'Windows'],
       'correctAnswer': 1,
     },
     {
-      'question': 'Apa fungsi utama RAM pada komputer?',
-      'answers': [
-        'Menyimpan data sementara saat komputer bekerja',
-        'Mencetak dokumen',
-        'Menghubungkan komputer ke internet',
-        'Menampilkan gambar',
-      ],
+      'question':
+          'Perhatikan gambar berikut. Perangkat apakah yang ditampilkan?',
+      'image': 'assets/images/komputer.jpg',
+      'answers': ['Komputer', 'Printer', 'Scanner', 'Speaker'],
       'correctAnswer': 0,
     },
     {
       'question': 'Manakah yang termasuk sistem operasi?',
-      'answers': [
-        'Google Chrome',
-        'Microsoft Word',
-        'Windows',
-        'Keyboard',
-      ],
+      'answers': ['Google Chrome', 'Microsoft Word', 'Windows', 'Keyboard'],
       'correctAnswer': 2,
     },
     {
@@ -59,12 +46,7 @@ class _KuisPageState extends State<KuisPage> {
     },
     {
       'question': 'Perangkat yang digunakan untuk mencetak dokumen adalah...',
-      'answers': [
-        'Monitor',
-        'Printer',
-        'Keyboard',
-        'Mouse',
-      ],
+      'answers': ['Monitor', 'Printer', 'Keyboard', 'Mouse'],
       'correctAnswer': 1,
     },
   ];
@@ -72,9 +54,7 @@ class _KuisPageState extends State<KuisPage> {
   void _checkAnswer() {
     if (_selectedAnswer == -1) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Pilih jawaban terlebih dahulu.'),
-        ),
+        const SnackBar(content: Text('Pilih jawaban terlebih dahulu.')),
       );
       return;
     }
@@ -82,8 +62,7 @@ class _KuisPageState extends State<KuisPage> {
     setState(() {
       _answered = true;
 
-      final correctAnswer =
-          _questions[_currentQuestion]['correctAnswer'];
+      final correctAnswer = _questions[_currentQuestion]['correctAnswer'];
 
       if (_selectedAnswer == correctAnswer) {
         _correctAnswers++;
@@ -114,16 +93,13 @@ class _KuisPageState extends State<KuisPage> {
   Widget build(BuildContext context) {
     final currentQuestion = _questions[_currentQuestion];
 
-    final List<String> answers =
-        List<String>.from(currentQuestion['answers']);
+    final List<String> answers = List<String>.from(currentQuestion['answers']);
 
     final int correctAnswer = currentQuestion['correctAnswer'];
 
-    final bool isLastQuestion =
-        _currentQuestion == _questions.length - 1;
+    final bool isLastQuestion = _currentQuestion == _questions.length - 1;
 
-    final int score =
-        ((_correctAnswers / _questions.length) * 100).round();
+    final int score = ((_correctAnswers / _questions.length) * 100).round();
 
     return GradientScaffold(
       title: 'Kuis',
@@ -134,36 +110,84 @@ class _KuisPageState extends State<KuisPage> {
           children: [
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(18),
+              padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 gradient: AppColors.gradient,
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(24),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.purple.withOpacity(0.20),
+                    blurRadius: 15,
+                    offset: const Offset(0, 7),
+                  ),
+                ],
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Row(
                 children: [
-                  const Text(
-                    'Uji Pemahamanmu 🧠',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'SIAP UJI KEMAMPUANMU? 🚀',
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        const Text(
+                          'Ayo Taklukkan Kuis!',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 21,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          'Soal ${_currentQuestion + 1} dari ${_questions.length}',
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontSize: 13,
+                          ),
+                        ),
+                        const SizedBox(height: 14),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: LinearProgressIndicator(
+                            value: (_currentQuestion + 1) / _questions.length,
+                            minHeight: 7,
+                            backgroundColor: Colors.white30,
+                            valueColor: const AlwaysStoppedAnimation<Color>(
+                              Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 6),
-                  Text(
-                    'Soal ${_currentQuestion + 1} dari ${_questions.length}',
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: 13,
+                  const SizedBox(width: 12),
+                  Container(
+                    width: 75,
+                    height: 75,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.18),
+                      borderRadius: BorderRadius.circular(22),
+                    ),
+                    child: const Icon(
+                      Icons.psychology_alt_rounded,
+                      color: Colors.white,
+                      size: 48,
                     ),
                   ),
                 ],
               ),
             ),
+            const SizedBox(height: 20),
 
-            const SizedBox(height: 24),
-
+            // TAMBAHKAN BAGIAN INI
             Text(
               'Pertanyaan ${_currentQuestion + 1}',
               style: const TextStyle(
@@ -187,85 +211,82 @@ class _KuisPageState extends State<KuisPage> {
 
             const SizedBox(height: 20),
 
-            ...List.generate(
-              answers.length,
-              (index) {
-                final isSelected = _selectedAnswer == index;
+            ...List.generate(answers.length, (index) {
+              final isSelected = _selectedAnswer == index;
 
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: InkWell(
-                    onTap: _answered
-                        ? null
-                        : () {
-                            setState(() {
-                              _selectedAnswer = index;
-                            });
-                          },
-                    borderRadius: BorderRadius.circular(16),
-                    child: Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: InkWell(
+                  onTap: _answered
+                      ? null
+                      : () {
+                          setState(() {
+                            _selectedAnswer = index;
+                          });
+                        },
+                  borderRadius: BorderRadius.circular(16),
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: isSelected
+                          ? AppColors.purple.withOpacity(0.10)
+                          : Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
                         color: isSelected
-                            ? AppColors.purple.withOpacity(0.10)
-                            : Colors.white,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(
-                          color: isSelected
-                              ? AppColors.purple
-                              : Colors.transparent,
-                          width: 1.5,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
-                            blurRadius: 8,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
+                            ? AppColors.purple
+                            : Colors.transparent,
+                        width: 1.5,
                       ),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 26,
-                            height: 26,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: isSelected
-                                    ? AppColors.purple
-                                    : AppColors.textGrey,
-                                width: 1.5,
-                              ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 26,
+                          height: 26,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
                               color: isSelected
                                   ? AppColors.purple
-                                  : Colors.transparent,
+                                  : AppColors.textGrey,
+                              width: 1.5,
                             ),
-                            child: isSelected
-                                ? const Icon(
-                                    Icons.check,
-                                    size: 17,
-                                    color: Colors.white,
-                                  )
-                                : null,
+                            color: isSelected
+                                ? AppColors.purple
+                                : Colors.transparent,
                           ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              answers[index],
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: AppColors.textDark,
-                              ),
+                          child: isSelected
+                              ? const Icon(
+                                  Icons.check,
+                                  size: 17,
+                                  color: Colors.white,
+                                )
+                              : null,
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            answers[index],
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: AppColors.textDark,
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                );
-              },
-            ),
+                ),
+              );
+            }),
 
             const SizedBox(height: 10),
 
@@ -400,4 +421,3 @@ class _KuisPageState extends State<KuisPage> {
     );
   }
 }
-

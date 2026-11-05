@@ -62,7 +62,6 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
 
   Future<void> _putarEfek(String namaFile) async {
     try {
-      await _audioPlayer.stop();
       await _audioPlayer.play(AssetSource('audio/$namaFile'));
     } catch (e) {
       debugPrint('Gagal memutar suara $namaFile: $e');
@@ -431,6 +430,13 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
             ],
             'jawabanBenar': 0,
             'ikon': Icons.quiz_rounded,
+          },
+           {
+            'judul': 'Contoh Penggunaan AI',
+            'isi':
+                'AI dapat digunakan pada chatbot, penerjemah '
+                'otomatis, sistem rekomendasi, dan pengenalan suara.',
+            'ikon': Icons.psychology_rounded,
           },
         ];
 
