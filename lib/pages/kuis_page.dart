@@ -211,6 +211,22 @@ class _KuisPageState extends State<KuisPage> {
 
             const SizedBox(height: 20),
 
+            if (currentQuestion['image'] != null) ...[
+  const SizedBox(height: 16),
+
+  ClipRRect(
+    borderRadius: BorderRadius.circular(18),
+    child: Image.asset(
+      currentQuestion['image'],
+      width: double.infinity,
+      height: 190,
+      fit: BoxFit.contain,
+    ),
+  ),
+
+  const SizedBox(height: 20),
+],
+
             ...List.generate(answers.length, (index) {
               final isSelected = _selectedAnswer == index;
 
