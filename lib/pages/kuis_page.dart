@@ -80,6 +80,10 @@ class _KuisPageState extends State<KuisPage> {
     } catch (e) {
       debugPrint('Gagal memutar suara: $e');
     }
+
+    if (_currentQuestion == _questions.length - 1) {
+  _tampilkanHasilKuis();
+    }
   }
 
   void _nextQuestion() {
@@ -94,12 +98,115 @@ class _KuisPageState extends State<KuisPage> {
 
   void _restartQuiz() {
     setState(() {
+      _questions.shuffle();
+
+      for ( var question in _questions) {
+        final answers = List<String>.from(question['answers']);
+        final correctAnswer = question['correctAnswer'];
+
+        final correctText = answers[correctAnswer];
+
+        answers.shuffle();
+        question['answers'] = answers;
+        question['correctAnswer'] = answers.indexOf(correctText);
+      }
+
       _currentQuestion = 0;
       _selectedAnswer = -1;
       _correctAnswers = 0;
       _answered = false;
     });
   }
+
+
+void _tampilkanHasilKuis() {
+  final int score =
+      ((_correctAnswers / _questions.length) * 100).round();
+
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (dialogContext) {
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+        child: Container(
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            gradient: AppColors.gradient,
+            borderRadius: BorderRadius.circular(24),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.emoji_events_rounded,
+                color: Colors.white,
+                size: 60,
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Kuis Selesai! 🎉',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Jawaban benar: $_correctAnswers dari ${_questions.length}',
+                style: const TextStyle(
+                  color: Colors.white70,
+                  fontSize: 15,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Nilai: $score',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(dialogContext);
+                    _restartQuiz();
+                  },
+                  child: const Text('Ulangi Kuis'),
+                ),
+              ),
+
+              const SizedBox(height: 8),
+
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    side: const BorderSide(color: Colors.white),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(dialogContext);
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Kembali ke Menu'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
 
   @override
   void dispose() {
@@ -366,61 +473,7 @@ class _KuisPageState extends State<KuisPage> {
                 ),
               ),
 
-            if (isLastQuestion) ...[
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  gradient: AppColors.gradient,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Column(
-                  children: [
-                    const Icon(
-                      Icons.emoji_events,
-                      color: Colors.white,
-                      size: 50,
-                    ),
-                    const SizedBox(height: 10),
-                    const Text(
-                      'Kuis Selesai! 🎉',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Jawaban benar: $_correctAnswers dari ${_questions.length}',
-                      style: const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 14,
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      'Nilai: $score',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 15),
-
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton(
-                  onPressed: _restartQuiz,
-                  child: const Text('Ulangi Kuis'),
-                ),
-              ),
-            ],
+           
           ],
         ),
       ),
