@@ -18,6 +18,7 @@ class _KuisPageState extends State<KuisPage> {
   int _selectedAnswer = -1;
   int _correctAnswers = 0;
   bool _answered = false;
+  bool _kuisDimulai = false;
 
   final List<Map<String, dynamic>> _questions = [
     {
@@ -82,7 +83,7 @@ class _KuisPageState extends State<KuisPage> {
     }
 
     if (_currentQuestion == _questions.length - 1) {
-  _tampilkanHasilKuis();
+      _tampilkanHasilKuis();
     }
   }
 
@@ -100,7 +101,7 @@ class _KuisPageState extends State<KuisPage> {
     setState(() {
       _questions.shuffle();
 
-      for ( var question in _questions) {
+      for (var question in _questions) {
         final answers = List<String>.from(question['answers']);
         final correctAnswer = question['correctAnswer'];
 
@@ -118,104 +119,177 @@ class _KuisPageState extends State<KuisPage> {
     });
   }
 
+  void _tampilkanHasilKuis() {
+    final int score = ((_correctAnswers / _questions.length) * 100).round();
 
-void _tampilkanHasilKuis() {
-  final int score =
-      ((_correctAnswers / _questions.length) * 100).round();
-
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (dialogContext) {
-      return Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
-        ),
-        child: Container(
-          padding: const EdgeInsets.all(24),
-          decoration: BoxDecoration(
-            gradient: AppColors.gradient,
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(24),
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(
-                Icons.emoji_events_rounded,
-                color: Colors.white,
-                size: 60,
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                'Kuis Selesai! 🎉',
-                style: TextStyle(
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              gradient: AppColors.gradient,
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(
+                  Icons.emoji_events_rounded,
                   color: Colors.white,
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
+                  size: 60,
                 ),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                'Jawaban benar: $_correctAnswers dari ${_questions.length}',
-                style: const TextStyle(
-                  color: Colors.white70,
-                  fontSize: 15,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Nilai: $score',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 24),
-
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(dialogContext);
-                    _restartQuiz();
-                  },
-                  child: const Text('Ulangi Kuis'),
-                ),
-              ),
-
-              const SizedBox(height: 8),
-
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton(
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    side: const BorderSide(color: Colors.white),
+                const SizedBox(height: 16),
+                const Text(
+                  'Kuis Selesai! 🎉',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
                   ),
-                  onPressed: () {
-                    Navigator.pop(dialogContext);
-                    Navigator.pop(context);
-                  },
-                  child: const Text('Kembali ke Menu'),
                 ),
-              ),
-            ],
+                const SizedBox(height: 12),
+                Text(
+                  'Jawaban benar: $_correctAnswers dari ${_questions.length}',
+                  style: const TextStyle(color: Colors.white70, fontSize: 15),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Nilai: $score',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(dialogContext);
+                      _restartQuiz();
+                    },
+                    child: const Text('Ulangi Kuis'),
+                  ),
+                ),
+
+                const SizedBox(height: 8),
+
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      side: const BorderSide(color: Colors.white),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(dialogContext);
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Kembali ke Menu'),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-      );
-    },
-  );
-}
+        );
+      },
+    );
+  }
 
   @override
   void dispose() {
     _audioPlayer.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
+    if (!_kuisDimulai) {
+      return GradientScaffold(
+        title: 'Kuis',
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(25),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(24),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.08),
+                    blurRadius: 15,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Icons.quiz_rounded,
+                    size: 70,
+                    color: AppColors.purple,
+                  ),
+                  const SizedBox(height: 18),
+                  const Text(
+                    'Ayo Mulai Kuis! 🎯',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.purple,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  const Text(
+                    'Pilihlah jawaban yang paling tepat dari setiap pertanyaan berikut. Kerjakan dengan teliti dan semangat!',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.black87,
+                      height: 1.5,
+                    ),
+                  ),
+                  const SizedBox(height: 25),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          _kuisDimulai = true;
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.purple,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                      ),
+                      child: const Text(
+                        'MULAI KUIS',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
     final currentQuestion = _questions[_currentQuestion];
 
     final List<String> answers = List<String>.from(currentQuestion['answers']);
@@ -472,8 +546,6 @@ void _tampilkanHasilKuis() {
                   child: const Text('Soal Berikutnya'),
                 ),
               ),
-
-           
           ],
         ),
       ),
