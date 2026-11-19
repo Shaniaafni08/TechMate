@@ -26,10 +26,10 @@ class DetailMateriPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
                 child: Image.asset(
                   materi.judul == 'Pengenalan Teknologi'
-                      ? 'assets/images/pengenalan_teknologi.jpg'
+                      ? 'assets/images/pengenalan_teknologi.png'
                       : materi.judul == 'Sistem Komputer'
-                      ? 'assets/images/sistem_komputer.jpg'
-                      : 'assets/images/pengenalan_teknologi.jpg',
+                      ? 'assets/images/sistem_komputer.png'
+                      : 'assets/images/pengenalan_teknologi.png',
                   width: double.infinity,
                   height: 200,
                   fit: BoxFit.cover,
