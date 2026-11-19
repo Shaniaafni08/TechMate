@@ -4,6 +4,7 @@ import '../theme/app_theme.dart';
 import '../widgets/gradient_scaffold.dart';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/services.dart';
 
 class KuisPage extends StatefulWidget {
   const KuisPage({super.key});
@@ -212,73 +213,115 @@ class _KuisPageState extends State<KuisPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (!_kuisDimulai) {
-      return GradientScaffold(
-        title: 'Kuis',
-        child: Center(
-          child: Padding(
+
+if (!_kuisDimulai) {
+  return GradientScaffold(
+    title: 'Kuis',
+    child: Container(
+      width: double.infinity,
+      height: double.infinity,
+      decoration: BoxDecoration(
+        gradient: AppColors.gradient,
+      ),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Positioned(
+            top: 35,
+            right: -30,
+            child: CircleAvatar(
+              radius: 75,
+              backgroundColor: Colors.white.withOpacity(0.10),
+            ),
+          ),
+          Positioned(
+            bottom: 35,
+            left: -35,
+            child: CircleAvatar(
+              radius: 90,
+              backgroundColor: Colors.white.withOpacity(0.10),
+            ),
+          ),
+          SingleChildScrollView(
             padding: const EdgeInsets.all(24),
             child: Container(
               width: double.infinity,
               padding: const EdgeInsets.all(25),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(28),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.08),
-                    blurRadius: 15,
-                    offset: const Offset(0, 5),
+                    color: Colors.black.withOpacity(0.15),
+                    blurRadius: 20,
+                    offset: const Offset(0, 8),
                   ),
                 ],
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(
-                    Icons.quiz_rounded,
-                    size: 70,
-                    color: AppColors.purple,
+                  Container(
+                    width: 115,
+                    height: 115,
+                    decoration: BoxDecoration(
+                      gradient: AppColors.gradient,
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: const Icon(
+                      Icons.emoji_events_rounded,
+                      color: Colors.white,
+                      size: 70,
+                    ),
                   ),
-                  const SizedBox(height: 18),
+                  const SizedBox(height: 25),
                   const Text(
-                    'Ayo Mulai Kuis! 🎯',
+                    'Siap Tantang Dirimu? 🚀',
+                    textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: 22,
+                      fontSize: 23,
                       fontWeight: FontWeight.bold,
                       color: AppColors.purple,
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 14),
                   const Text(
-                    'Pilihlah jawaban yang paling tepat dari setiap pertanyaan berikut. Kerjakan dengan teliti dan semangat!',
+                    'Pilihlah jawaban yang paling tepat dari setiap pertanyaan berikut. Kerjakan dengan teliti dan tunjukkan kemampuan terbaikmu!',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.black87,
-                      height: 1.5,
+                      height: 1.6,
                     ),
                   ),
-                  const SizedBox(height: 25),
+                  const SizedBox(height: 28),
                   SizedBox(
                     width: double.infinity,
-                    child: ElevatedButton(
+                    height: 55,
+                    child: ElevatedButton.icon(
                       onPressed: () {
+                        SystemSound.play(SystemSoundType.click);
+                        HapticFeedback.lightImpact();
+
                         setState(() {
                           _kuisDimulai = true;
                         });
                       },
+                      icon: const Icon(Icons.play_arrow_rounded),
+                      label: const Text(
+                        'MULAI KUIS',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.purple,
                         foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        elevation: 5,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(16),
                         ),
-                      ),
-                      child: const Text(
-                        'MULAI KUIS',
-                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
@@ -286,9 +329,11 @@ class _KuisPageState extends State<KuisPage> {
               ),
             ),
           ),
-        ),
-      );
-    }
+        ],
+      ),
+    ),
+  );
+}
 
     final currentQuestion = _questions[_currentQuestion];
 

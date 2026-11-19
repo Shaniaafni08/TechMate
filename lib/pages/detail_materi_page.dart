@@ -20,16 +20,20 @@ class DetailMateriPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Icon materi
+            // Gambar materi
             Center(
-              child: Container(
-                width: 90,
-                height: 90,
-                decoration: BoxDecoration(
-                  color: materi.color.withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(24),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image.asset(
+                  materi.judul == 'Pengenalan Teknologi'
+                      ? 'assets/images/pengenalan_teknologi.jpg'
+                      : materi.judul == 'Sistem Komputer'
+                      ? 'assets/images/sistem_komputer.jpg'
+                      : 'assets/images/pengenalan_teknologi.jpg',
+                  width: double.infinity,
+                  height: 200,
+                  fit: BoxFit.cover,
                 ),
-                child: Icon(materi.icon, color: materi.color, size: 48),
               ),
             ),
 

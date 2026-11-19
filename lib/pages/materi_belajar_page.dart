@@ -236,10 +236,22 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
           {
             'judul': 'Pengertian Teknologi',
             'isi':
-                'Teknologi adalah penerapan ilmu pengetahuan '
-                'untuk membantu manusia menyelesaikan pekerjaan '
-                'dan memenuhi kebutuhan. Contohnya komputer, '
-                'smartphone, dan internet.',
+                'Teknologi adalah penerapan ilmu pengetahuan, '
+                'keterampilan, dan berbagai cara untuk membantu '
+                'manusia menyelesaikan pekerjaan serta memenuhi '
+                'kebutuhan dalam kehidupan sehari-hari. '
+                '\n\n'
+                'Teknologi diciptakan agar pekerjaan manusia '
+                'menjadi lebih mudah, cepat, praktis, dan efisien. '
+                'Teknologi tidak hanya berupa alat elektronik, '
+                'tetapi juga dapat berupa alat, metode, maupun '
+                'sistem yang membantu aktivitas manusia. '
+                '\n\n'
+                'Contohnya, smartphone digunakan untuk berkomunikasi '
+                'dan mencari informasi, komputer digunakan untuk '
+                'mengolah data serta membuat dokumen, sedangkan '
+                'internet membantu manusia memperoleh informasi '
+                'dan berkomunikasi tanpa harus bertemu secara langsung.',
             'ikon': Icons.devices_rounded,
           },
           {
@@ -431,7 +443,7 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
             'jawabanBenar': 0,
             'ikon': Icons.quiz_rounded,
           },
-           {
+          {
             'judul': 'Contoh Penggunaan AI',
             'isi':
                 'AI dapat digunakan pada chatbot, penerjemah '
