@@ -5,16 +5,32 @@ import '../theme/app_theme.dart';
 import '../models/materi_model.dart';
 import '../widgets/gradient_scaffold.dart';
 import 'materi_belajar_page.dart';
+import 'package:audioplayers/audioplayers.dart';
 
-class DetailMateriPage extends StatelessWidget {
+
+class DetailMateriPage extends StatefulWidget {
   final MateriModel materi;
 
   const DetailMateriPage({super.key, required this.materi});
 
   @override
+  State<DetailMateriPage> createState() => _DetailMateriPageState();
+}
+
+class _DetailMateriPageState extends State<DetailMateriPage> {
+  final AudioPlayer _audioPlayer = AudioPlayer();
+
+  Future<void> _putarSuaraKlik() async {
+  await _audioPlayer.stop();
+  await _audioPlayer.play(
+    AssetSource('audio/klik.mp3'),
+  );
+}
+
+  @override
   Widget build(BuildContext context) {
     return GradientScaffold(
-      title: materi.judul,
+      title: widget.materi.judul,
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -25,9 +41,9 @@ class DetailMateriPage extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: Image.asset(
-                  materi.judul == 'Pengenalan Teknologi'
+                  widget.materi.judul == 'Pengenalan Teknologi'
                       ? 'assets/images/pengenalan_teknologi.png'
-                      : materi.judul == 'Sistem Komputer'
+                      : widget.materi.judul == 'Sistem Komputer'
                       ? 'assets/images/sistem_komputer.png'
                       : 'assets/images/pengenalan_teknologi.png',
                   width: double.infinity,
@@ -41,7 +57,7 @@ class DetailMateriPage extends StatelessWidget {
 
             // Judul
             Text(
-              materi.judul,
+              widget.materi.judul,
               style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -53,7 +69,7 @@ class DetailMateriPage extends StatelessWidget {
 
             // Deskripsi
             Text(
-              materi.deskripsi,
+              widget.materi.deskripsi,
               style: const TextStyle(
                 fontSize: 14,
                 color: AppColors.textGrey,
@@ -94,7 +110,7 @@ class DetailMateriPage extends StatelessWidget {
 
                   Text(
                     'Pada materi ini kamu akan mempelajari '
-                    '${materi.judul.toLowerCase()} secara bertahap. '
+                    '${widget.materi.judul.toLowerCase()} secara bertahap. '
                     'Materi disajikan dengan bahasa yang mudah dipahami '
                     'dan dilengkapi dengan contoh agar proses belajar '
                     'menjadi lebih interaktif.',
@@ -132,8 +148,10 @@ class DetailMateriPage extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton.icon(
                 onPressed: () async {
+                  await _putarSuaraKlik();
                   final prefs = await SharedPreferences.getInstance();
-                  await prefs.setString('materiTerakhir', materi.judul);
+                  
+                  await prefs.setString('materiTerakhir', widget.materi.judul);
                   await prefs.setInt('slideTerakhir', 0);
 
                   if (!context.mounted) return;
@@ -141,7 +159,7 @@ class DetailMateriPage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => MateriBelajarPage(materi: materi),
+                      builder: (_) => MateriBelajarPage(materi: widget.materi),
                     ),
                   );
                 },
