@@ -122,11 +122,18 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
     _popUpAktivitasTampil = true;
 
     final aktivitas = _slides[_slideAktif];
+    final isTrueFalse = aktivitas['jenis'] == 'trueFalse';
+
     int? jawabanDipilih;
     String? pesan;
     bool jawabanBenar = false;
+    int nomorPertanyaan = 0;
 
-    final pilihan = aktivitas['jenis'] == 'trueFalse'
+    final daftarPertanyaan = isTrueFalse
+        ? List<Map<String, dynamic>>.from(aktivitas['pertanyaan'])
+        : <Map<String, dynamic>>[];
+
+    final pilihan = isTrueFalse
         ? ['TRUE', 'FALSE']
         : aktivitas['pilihan'] as List<String>;
 
@@ -136,6 +143,14 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
       builder: (dialogContext) {
         return StatefulBuilder(
           builder: (context, setDialogState) {
+            final isiPertanyaan = isTrueFalse
+                ? daftarPertanyaan[nomorPertanyaan]['teks']
+                : aktivitas['isi'];
+
+            final jawabanBenarAktif = isTrueFalse
+                ? daftarPertanyaan[nomorPertanyaan]['jawabanBenar']
+                : aktivitas['jawabanBenar'];
+
             return AlertDialog(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(22),
@@ -151,13 +166,25 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  if (isTrueFalse)
+                    Text(
+                      'Pertanyaan ${nomorPertanyaan + 1} dari ${daftarPertanyaan.length}',
+                      style: const TextStyle(
+                        color: AppColors.purple,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
+                  const SizedBox(height: 8),
+
                   Text(
-                    aktivitas['isi'],
+                    isiPertanyaan,
                     style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
+
                   const SizedBox(height: 16),
 
                   ...List.generate(pilihan.length, (index) {
@@ -166,33 +193,48 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
                       child: SizedBox(
                         width: double.infinity,
                         child: OutlinedButton(
-                          onPressed: () async {
-                            final benar = index == aktivitas['jawabanBenar'];
+                          onPressed: jawabanBenar
+                              ? null
+                              : () async {
+                                  final benar = index == jawabanBenarAktif;
 
-                            if (benar) {
-                              setDialogState(() {
-                                jawabanDipilih = index;
-                                jawabanBenar = true;
-                                pesan = 'Benar! Jawaban kamu tepat 🎉';
-                              });
+                                  if (benar) {
+                                    setDialogState(() {
+                                      jawabanDipilih = index;
+                                      jawabanBenar = true;
+                                      pesan = 'Benar! Jawaban kamu tepat 🎉';
+                                    });
 
-                              await _putarEfek('correct.mp3');
+                                    await _putarEfek('correct.mp3');
 
-                              await Future.delayed(
-                                const Duration(milliseconds: 1000),
-                              );
+                                    await Future.delayed(
+                                      const Duration(milliseconds: 1000),
+                                    );
 
-                              if (dialogContext.mounted) {
-                                Navigator.pop(dialogContext, true);
-                              }
-                            } else {
-                              await _putarEfek('wrong.mp3');
-                              setDialogState(() {
-                                jawabanDipilih = index;
-                                pesan = 'Belum tepat, coba lagi ya! 💪';
-                              });
-                            }
-                          },
+                                    if (!dialogContext.mounted) return;
+
+                                    if (isTrueFalse &&
+                                        nomorPertanyaan <
+                                            daftarPertanyaan.length - 1) {
+                                      setDialogState(() {
+                                        nomorPertanyaan++;
+                                        jawabanDipilih = null;
+                                        jawabanBenar = false;
+                                        pesan = null;
+                                      });
+                                    } else {
+                                      Navigator.pop(dialogContext, true);
+                                    }
+                                  } else {
+                                    await _putarEfek('wrong.mp3');
+
+                                    setDialogState(() {
+                                      jawabanDipilih = index;
+                                      jawabanBenar = false;
+                                      pesan = 'Belum tepat, coba lagi ya! 💪';
+                                    });
+                                  }
+                                },
                           style: OutlinedButton.styleFrom(
                             foregroundColor: jawabanDipilih == index
                                 ? (jawabanBenar ? Colors.green : Colors.red)
@@ -209,8 +251,8 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
                   if (pesan != null)
                     Text(
                       pesan!,
-                      style: const TextStyle(
-                        color: Colors.red,
+                      style: TextStyle(
+                        color: jawabanBenar ? Colors.green : Colors.red,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -498,49 +540,186 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
         return [
           {
             'judul': 'Pengertian Sistem Komputer',
+
             'isi':
-                'Sistem komputer terdiri dari komponen yang '
-                'bekerja sama untuk mengolah data menjadi informasi. '
-                'Komponen utamanya meliputi hardware, software, '
-                'dan brainware.',
+                'Sistem komputer adalah sekumpulan komponen '
+                'yang saling berhubungan dan bekerja sama untuk '
+                'mengolah data menjadi informasi yang berguna.\n\n'
+                'Dalam penggunaannya, komputer tidak hanya terdiri '
+                'dari perangkat yang dapat dilihat secara fisik. '
+                'Ada juga program yang mengatur kerja komputer serta '
+                'manusia yang mengoperasikannya.\n\n'
+                'Sistem komputer memiliki tiga komponen utama, yaitu:\n'
+                '1. Hardware (perangkat keras).\n'
+                '2. Software (perangkat lunak).\n'
+                '3. Brainware (pengguna).\n\n'
+                'Contoh: ketika siswa mengetik tugas menggunakan '
+                'Microsoft Word, keyboard digunakan untuk memasukkan '
+                'data, software mengolah perintah, dan monitor '
+                'menampilkan hasilnya.',
+
             'ikon': Icons.computer_rounded,
           },
           {
             'judul': 'Hardware (Perangkat Keras)',
+
             'isi':
-                'Hardware adalah bagian fisik komputer yang '
-                'dapat dilihat atau disentuh, seperti monitor, '
-                'keyboard, mouse, dan printer.',
+                'Hardware atau perangkat keras adalah seluruh '
+                'komponen fisik komputer yang dapat dilihat dan '
+                'disentuh secara langsung.\n\n'
+                'Hardware memiliki peran penting karena menjadi '
+                'tempat pengguna memberikan perintah, tempat data '
+                'diproses, dan tempat hasil pengolahan ditampilkan.\n\n'
+                'Beberapa contoh hardware antara lain:\n\n'
+                '1. Monitor: menampilkan informasi dalam bentuk gambar '
+                'dan tulisan.\n'
+                '2. Keyboard: memasukkan huruf, angka, dan perintah.\n'
+                '3. Mouse: menggerakkan kursor dan memilih menu.\n'
+                '4. Processor: mengolah data dan menjalankan instruksi.\n'
+                '5. Printer: mencetak dokumen atau gambar.\n\n'
+                'Contoh dalam kehidupan sehari-hari: ketika kita '
+                'mengetik tugas, keyboard digunakan untuk memasukkan '
+                'teks, processor mengolah perintah, dan monitor '
+                'menampilkan hasil ketikan.',
+
             'ikon': Icons.desktop_windows_rounded,
           },
           {
-            'jenis': 'aktivitas',
-            'judul': 'Aktivitas: Mengenal Hardware',
-            'isi': 'Manakah yang termasuk perangkat keras?',
-            'pilihan': [
-              'Keyboard',
-              'Microsoft Word',
-              'Windows',
-              'Google Chrome',
-            ],
-            'jawabanBenar': 0,
-            'ikon': Icons.quiz_rounded,
+            'judul': 'Komponen Utama Hardware',
+
+            'isi':
+                'Hardware dapat dikelompokkan berdasarkan fungsi '
+                'dan cara kerjanya. Secara umum, terdapat empat '
+                'kelompok utama perangkat keras, yaitu:\n\n'
+                '1. Input Device (Perangkat Masukan)\n'
+                'Digunakan untuk memasukkan data atau perintah '
+                'ke dalam komputer.\n'
+                'Contoh: keyboard, mouse, scanner, dan microphone.\n\n'
+                '2. Process Device (Perangkat Pemroses)\n'
+                'Digunakan untuk mengolah data dan menjalankan '
+                'instruksi yang diberikan oleh pengguna.\n'
+                'Contoh: processor (CPU) dan RAM.\n\n'
+                '3. Output Device (Perangkat Keluaran)\n'
+                'Digunakan untuk menampilkan hasil pengolahan '
+                'data kepada pengguna.\n'
+                'Contoh: monitor, printer, dan speaker.\n\n'
+                '4. Storage Device (Perangkat Penyimpanan)\n'
+                'Digunakan untuk menyimpan data dan informasi '
+                'agar dapat digunakan kembali.\n'
+                'Contoh: hard disk, SSD, dan flashdisk.\n\n'
+                'Keempat kelompok perangkat tersebut saling '
+                'mendukung agar komputer dapat bekerja dengan baik.',
+
+            'ikon': Icons.memory_rounded,
           },
           {
             'judul': 'Software (Perangkat Lunak)',
+
             'isi':
-                'Software adalah program atau instruksi yang '
-                'digunakan komputer untuk menjalankan tugas. '
-                'Contohnya sistem operasi dan aplikasi pengolah kata.',
+                'Software atau perangkat lunak adalah kumpulan '
+                'program dan instruksi yang digunakan untuk '
+                'mengatur serta menjalankan berbagai tugas pada komputer.\n\n'
+                'Berbeda dengan hardware, software tidak memiliki '
+                'bentuk fisik sehingga tidak dapat disentuh secara '
+                'langsung. Namun, software dapat dilihat dan digunakan '
+                'melalui tampilan komputer.\n\n'
+                'Software berfungsi untuk menghubungkan pengguna '
+                'dengan perangkat keras. Tanpa software, hardware '
+                'tidak dapat menjalankan tugas sesuai kebutuhan pengguna.\n\n'
+                'Contoh software dalam kehidupan sehari-hari:\n\n'
+                '1. Windows: sistem operasi untuk mengelola komputer.\n'
+                '2. Microsoft Word: membuat dan mengedit dokumen.\n'
+                '3. Microsoft PowerPoint: membuat presentasi.\n'
+                '4. Google Chrome: mengakses halaman internet.\n'
+                '5. Paint: membuat dan mengedit gambar.\n\n'
+                'Contoh: ketika siswa membuat tugas menggunakan '
+                'Microsoft Word, software membantu mengolah tulisan, '
+                'mengatur halaman, dan menyimpan dokumen.',
+
             'ikon': Icons.apps_rounded,
+          },
+          {
+            'judul': 'Jenis-Jenis Software',
+            'isi':
+                'Software dapat dibedakan menjadi beberapa jenis:\n\n'
+                '1. Sistem operasi: mengatur seluruh kerja komputer, '
+                'contohnya Windows dan Linux.\n'
+                '2. Aplikasi: membantu pengguna melakukan pekerjaan, '
+                'contohnya Microsoft Word dan PowerPoint.\n'
+                '3. Utility: membantu merawat dan melindungi komputer, '
+                'contohnya antivirus.',
+            'ikon': Icons.settings_applications_rounded,
+          },
+          {
+            'jenis': 'aktivitas',
+            'judul': 'Aktivitas 1: Pilihan Ganda',
+            'isi': 'Manakah yang termasuk perangkat keras komputer?',
+            'pilihan': [
+              'Microsoft Word',
+              'Keyboard',
+              'Windows',
+              'Google Chrome',
+            ],
+            'jawabanBenar': 1,
+            'ikon': Icons.quiz_rounded,
           },
           {
             'judul': 'Brainware (Pengguna)',
             'isi':
-                'Brainware adalah orang yang menggunakan atau '
-                'mengelola komputer, misalnya siswa, guru, '
-                'programmer, dan teknisi.',
+                'Brainware adalah manusia yang menggunakan, '
+                'mengoperasikan, atau mengelola sistem komputer.\n\n'
+                'Contohnya siswa, guru, programmer, operator komputer, '
+                'dan teknisi.',
             'ikon': Icons.person_rounded,
+          },
+          {
+            'judul': 'Hubungan Ketiga Komponen',
+            'isi':
+                'Hardware, software, dan brainware saling membutuhkan '
+                'agar komputer dapat bekerja dengan baik.\n\n'
+                'Hardware menyediakan perangkat fisik, software '
+                'memberikan instruksi, sedangkan brainware memberikan '
+                'perintah dan mengoperasikan komputer.',
+            'ikon': Icons.hub_rounded,
+          },
+          {
+            'judul': 'Cara Kerja Sistem Komputer',
+            'isi':
+                'Sistem komputer bekerja melalui empat tahapan utama:\n\n'
+                '1. Input: data dimasukkan melalui keyboard atau mouse.\n'
+                '2. Process: processor mengolah data sesuai instruksi.\n'
+                '3. Output: hasil ditampilkan melalui monitor atau printer.\n'
+                '4. Storage: data dapat disimpan ke media penyimpanan.\n\n'
+                'Contoh: saat mengetik tugas, komputer menerima '
+                'ketikan, mengolahnya, lalu menampilkan tulisan di layar.',
+            'ikon': Icons.sync_alt_rounded,
+          },
+
+          {
+            'jenis': 'trueFalse',
+            'judul': 'Aktivitas 2: Benar atau Salah',
+            'isi': 'Jawablah pernyataan berikut dengan benar atau salah.',
+            'pertanyaan': [
+              {'teks': 'Keyboard termasuk perangkat input.', 'jawabanBenar': 0},
+              {
+                'teks': 'Brainware adalah manusia yang menggunakan komputer.',
+                'jawabanBenar': 0,
+              },
+            ],
+            'ikon': Icons.fact_check_rounded,
+          },
+
+          {
+            'judul': 'Kesimpulan',
+            'isi':
+                'Sistem komputer merupakan kesatuan dari hardware, '
+                'software, dan brainware yang saling bekerja sama.\n\n'
+                'Ketiga komponen tersebut memiliki fungsi berbeda, '
+                'tetapi semuanya dibutuhkan agar komputer dapat '
+                'menerima, mengolah, menyimpan, dan menghasilkan informasi.\n\n'
+                'Dengan memahami sistem komputer, kita dapat '
+                'menggunakan teknologi dengan lebih baik.',
+            'ikon': Icons.school_rounded,
           },
         ];
 
