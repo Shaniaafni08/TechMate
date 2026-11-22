@@ -124,6 +124,7 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
     final aktivitas = _slides[_slideAktif];
     int? jawabanDipilih;
     String? pesan;
+    bool jawabanBenar = false;
 
     final pilihan = aktivitas['jenis'] == 'trueFalse'
         ? ['TRUE', 'FALSE']
@@ -169,7 +170,18 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
                             final benar = index == aktivitas['jawabanBenar'];
 
                             if (benar) {
+                              setDialogState(() {
+                                jawabanDipilih = index;
+                                jawabanBenar = true;
+                                pesan = 'Benar! Jawaban kamu tepat 🎉';
+                              });
+
                               await _putarEfek('correct.mp3');
+
+                              await Future.delayed(
+                                const Duration(milliseconds: 1000),
+                              );
+
                               if (dialogContext.mounted) {
                                 Navigator.pop(dialogContext, true);
                               }
@@ -183,7 +195,7 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
                           },
                           style: OutlinedButton.styleFrom(
                             foregroundColor: jawabanDipilih == index
-                                ? Colors.red
+                                ? (jawabanBenar ? Colors.green : Colors.red)
                                 : AppColors.purple,
                           ),
                           child: Text(
@@ -256,47 +268,229 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
             'gambar': 'assets/images/pengenalan_teknologi.png',
           },
           {
-            'judul': 'Contoh Teknologi di Sekitar Kita',
+            'judul': 'Sejarah dan Perkembangan Teknologi',
             'isi':
-                'Smartphone membantu komunikasi, komputer '
-                'membantu mengerjakan tugas, dan mesin ATM '
-                'membantu melakukan transaksi perbankan.',
-            'ikon': Icons.phone_android_rounded,
+                'Teknologi telah berkembang sejak manusia mulai '
+                'menciptakan alat sederhana untuk memenuhi kebutuhan '
+                'hidupnya. Seiring berjalannya waktu, teknologi '
+                'mengalami perubahan dari bentuk sederhana menjadi '
+                'semakin modern.\n\n'
+                'Perkembangan teknologi dapat dibagi menjadi beberapa tahap:\n\n'
+                '1. Masa Prasejarah\n'
+                'Manusia menggunakan batu, kayu, dan tulang sebagai '
+                'alat untuk berburu dan bertahan hidup.\n\n'
+                '2. Masa Peradaban\n'
+                'Mulai ditemukan roda, alat pertanian, serta teknologi '
+                'pengolahan logam.\n\n'
+                '3. Revolusi Industri\n'
+                'Penggunaan mesin mulai berkembang untuk membantu '
+                'proses produksi.\n\n'
+                '4. Era Modern\n'
+                'Berkembangnya listrik, telepon, komputer, dan internet.\n\n'
+                '5. Era Digital\n'
+                'Munculnya kecerdasan buatan (AI), robotika, '
+                'komputasi awan, dan Internet of Things (IoT).\n\n'
+                'Perkembangan tersebut menunjukkan bahwa teknologi '
+                'terus berubah mengikuti kebutuhan dan kemajuan '
+                'ilmu pengetahuan manusia.',
+            'ikon': Icons.history_edu_rounded,
+            'gambar': 'assets/images/sejarah_teknologi.png',
           },
           {
-            'jenis': 'aktivitas',
-            'judul': 'Aktivitas 1: Mengenal Teknologi',
+            'judul': 'Jenis-Jenis Teknologi',
             'isi':
-                'Manakah contoh teknologi yang digunakan '
-                'untuk berkomunikasi jarak jauh?',
-            'pilihan': ['Smartphone', 'Penggaris', 'Buku tulis', 'Pensil'],
-            'jawabanBenar': 0,
+                'Teknologi memiliki berbagai jenis yang digunakan '
+                'untuk membantu manusia dalam bidang kehidupan '
+                'yang berbeda-beda.\n\n'
+                '1. Teknologi Informasi\n'
+                'Digunakan untuk mengolah, menyimpan, dan menyampaikan '
+                'informasi. Contohnya komputer dan laptop.\n\n'
+                '2. Teknologi Komunikasi\n'
+                'Digunakan untuk memudahkan manusia berkomunikasi. '
+                'Contohnya smartphone dan aplikasi pesan.\n\n'
+                '3. Teknologi Transportasi\n'
+                'Digunakan untuk membantu manusia berpindah tempat. '
+                'Contohnya mobil, kereta, dan pesawat.\n\n'
+                '4. Teknologi Pendidikan\n'
+                'Digunakan untuk mendukung kegiatan belajar. '
+                'Contohnya komputer dan aplikasi pembelajaran.\n\n'
+                '5. Teknologi Kesehatan\n'
+                'Digunakan untuk membantu pemeriksaan dan perawatan '
+                'kesehatan. Contohnya alat USG dan termometer digital.\n\n'
+                '6. Teknologi Industri dan Pertanian\n'
+                'Digunakan untuk membantu proses produksi dan '
+                'pengolahan hasil pertanian. Contohnya mesin produksi '
+                'dan traktor.',
+            'ikon': Icons.category_rounded,
+            'gambar': 'assets/images/jenis_teknologi.png',
+          },
+          {
+            'judul': 'Fungsi Teknologi',
+            'isi':
+                'Teknologi memiliki berbagai fungsi yang membantu '
+                'manusia dalam menjalankan aktivitas sehari-hari.\n\n'
+                '1. Mempermudah Pekerjaan\n'
+                'Teknologi membantu menyelesaikan pekerjaan dengan '
+                'lebih mudah dan cepat.\n\n'
+                '2. Meningkatkan Efisiensi\n'
+                'Teknologi menghemat waktu, tenaga, dan biaya dalam '
+                'melakukan suatu kegiatan.\n\n'
+                '3. Mempermudah Komunikasi\n'
+                'Manusia dapat berkomunikasi tanpa harus bertemu '
+                'secara langsung.\n\n'
+                '4. Mengolah Informasi\n'
+                'Teknologi membantu mengumpulkan, mengolah, dan '
+                'menyampaikan informasi.\n\n'
+                '5. Menyimpan Data\n'
+                'Berbagai informasi dapat disimpan secara digital '
+                'dan diakses kembali ketika dibutuhkan.',
+            'ikon': Icons.settings_suggest_rounded,
+            'gambar': 'assets/images/fungsi_teknologi.png',
+          },
+          {
+            'judul': 'Aktivitas Interaktif',
+            'isi': 'Manakah yang merupakan fungsi utama teknologi?',
+            'jenis': 'aktivitas',
+            'pertanyaan': 'Manakah yang merupakan fungsi utama teknologi?',
+            'pilihan': [
+              'Mempersulit pekerjaan manusia',
+              'Membantu pekerjaan manusia',
+              'Menghambat komunikasi',
+              'Mengurangi informasi',
+            ],
+            'jawabanBenar': 1,
             'ikon': Icons.quiz_rounded,
           },
           {
-            'judul': 'Manfaat Teknologi',
+            'judul': 'Contoh Teknologi di Sekitar Kita',
             'isi':
-                'Teknologi membantu manusia belajar, bekerja, '
-                'berkomunikasi, dan mencari informasi. Teknologi '
-                'perlu digunakan secara bijak dan bertanggung jawab.',
+                'Teknologi dapat ditemukan dengan mudah dalam '
+                'kehidupan sehari-hari. Berikut beberapa contohnya:\n\n'
+                '1. Smartphone\n'
+                'Digunakan untuk berkomunikasi, mencari informasi, '
+                'dan menjalankan berbagai aplikasi.\n\n'
+                '2. Laptop dan Komputer\n'
+                'Digunakan untuk mengetik, mengolah data, belajar, '
+                'dan menyelesaikan pekerjaan.\n\n'
+                '3. Internet\n'
+                'Digunakan untuk mencari informasi, mengakses '
+                'pembelajaran, dan berkomunikasi.\n\n'
+                '4. Mesin Cuci\n'
+                'Membantu mencuci pakaian sehingga pekerjaan rumah '
+                'menjadi lebih mudah.\n\n'
+                '5. ATM dan Mobile Banking\n'
+                'Membantu melakukan transaksi keuangan secara '
+                'lebih praktis.\n\n'
+                '6. Aplikasi Pembelajaran\n'
+                'Membantu siswa memperoleh materi dan belajar '
+                'secara digital.',
             'ikon': Icons.lightbulb_rounded,
           },
 
           {
-            'jenis': 'trueFalse',
-            'judul': 'Aktivitas 2: Benar atau Salah',
-            'isi': 'Smartphone dapat digunakan untuk berkomunikasi jarak jauh.',
-            'jawabanBenar': 0,
-            'ikon': Icons.fact_check_rounded,
+            'judul': 'Manfaat Teknologi',
+            'isi':
+                'Teknologi memberikan banyak manfaat dalam berbagai '
+                'bidang kehidupan manusia.\n\n'
+                '1. Bidang Pendidikan\n'
+                'Membantu siswa mencari materi, mengikuti pembelajaran '
+                'daring, dan mengakses sumber belajar.\n\n'
+                '2. Bidang Kesehatan\n'
+                'Membantu dokter melakukan pemeriksaan dan memberikan '
+                'pelayanan kesehatan.\n\n'
+                '3. Bidang Komunikasi\n'
+                'Memudahkan manusia bertukar pesan dan informasi '
+                'dengan cepat.\n\n'
+                '4. Bidang Ekonomi\n'
+                'Membantu kegiatan jual beli, pembayaran, dan '
+                'pengembangan usaha.\n\n'
+                '5. Bidang Transportasi\n'
+                'Mempermudah perjalanan dan membantu menentukan '
+                'rute perjalanan.',
+            'ikon': Icons.lightbulb_rounded,
+            'gambar': 'assets/images/manfaat_teknologi.png',
+          },
+
+          {
+            'judul': 'Dampak Positif dan Negatif Teknologi',
+            'isi':
+                'Penggunaan teknologi memberikan dampak positif '
+                'dan negatif bagi kehidupan manusia.\n\n'
+                'Dampak Positif:\n'
+                '1. Pekerjaan menjadi lebih mudah dan cepat.\n'
+                '2. Informasi lebih mudah diperoleh.\n'
+                '3. Komunikasi dapat dilakukan dari jarak jauh.\n'
+                '4. Membantu kegiatan belajar dan bekerja.\n\n'
+                'Dampak Negatif:\n'
+                '1. Menimbulkan ketergantungan terhadap teknologi.\n'
+                '2. Berisiko menyebabkan kebocoran data pribadi.\n'
+                '3. Mempermudah penyebaran berita bohong atau hoaks.\n'
+                '4. Mengurangi interaksi secara langsung.\n'
+                '5. Beberapa pekerjaan dapat berubah akibat otomatisasi.\n\n'
+                'Oleh karena itu, teknologi perlu digunakan secara '
+                'bijak dan bertanggung jawab.',
+            'ikon': Icons.balance_rounded,
+            'gambar': 'assets/images/dampak_teknologi.png',
+          },
+          {
+            'judul': 'Aktivitas Interaktif',
+            'isi': 'Pilih tindakan yang menunjukkan penggunaan teknologi secara bijak!',
+            'jenis': 'aktivitas',
+            'pertanyaan': 'Manakah tindakan yang menunjukkan penggunaan teknologi secara bijak?',
+            'pilihan': [
+              'Membagikan kata sandi kepada teman',
+              'Menyebarkan berita tanpa memeriksa kebenarannya',
+              'Menjaga data pribadi dan memeriksa informasi',
+              'Menggunakan gadget sepanjang waktu',
+            ],
+            'jawabanBenar': 2,
+            'ikon': Icons.quiz_rounded,
           },
 
           {
             'judul': 'Menggunakan Teknologi dengan Bijak',
             'isi':
-                'Periksa kebenaran informasi, jaga data pribadi, '
-                'dan gunakan perangkat untuk kegiatan yang '
-                'bermanfaat.',
+                'Teknologi harus digunakan secara bijak agar '
+                'memberikan manfaat dan tidak merugikan diri sendiri '
+                'maupun orang lain.\n\n'
+                'Berikut beberapa cara menggunakan teknologi dengan bijak:\n\n'
+                '1. Melindungi Data Pribadi\n'
+                'Jangan membagikan kata sandi, alamat, atau informasi '
+                'pribadi kepada sembarang orang.\n\n'
+                '2. Memeriksa Kebenaran Informasi\n'
+                'Pastikan informasi berasal dari sumber yang terpercaya '
+                'sebelum membagikannya.\n\n'
+                '3. Mengatur Waktu Penggunaan\n'
+                'Gunakan perangkat digital sesuai kebutuhan dan '
+                'jangan sampai mengganggu kegiatan belajar atau istirahat.\n\n'
+                '4. Menggunakan untuk Hal Positif\n'
+                'Manfaatkan teknologi untuk belajar, berkarya, dan '
+                'mengembangkan kemampuan.\n\n'
+                '5. Menghargai Orang Lain\n'
+                'Berkomunikasilah dengan sopan dan jangan melakukan '
+                'perundungan di dunia digital.\n\n'
+                '6. Menghargai Hak Cipta\n'
+                'Cantumkan sumber ketika menggunakan karya atau '
+                'informasi milik orang lain.',
             'ikon': Icons.verified_user_rounded,
+          },
+          {
+            'judul': 'Kesimpulan',
+            'isi':
+                'Teknologi merupakan penerapan ilmu pengetahuan '
+                'dan keterampilan manusia untuk membantu memenuhi '
+                'kebutuhan serta menyelesaikan berbagai pekerjaan.\n\n'
+                'Teknologi terus berkembang dan digunakan dalam '
+                'berbagai bidang, seperti pendidikan, kesehatan, '
+                'komunikasi, ekonomi, dan transportasi.\n\n'
+                'Teknologi memberikan banyak manfaat, tetapi juga '
+                'memiliki dampak negatif apabila digunakan secara '
+                'berlebihan atau tidak bertanggung jawab.\n\n'
+                'Oleh karena itu, kita harus menggunakan teknologi '
+                'secara bijak, aman, dan bertanggung jawab agar '
+                'dapat memberikan manfaat bagi kehidupan.',
+            'ikon': Icons.school_rounded,
+            'gambar': 'assets/images/kesimpulan_teknologi.png',
           },
         ];
 
