@@ -253,6 +253,7 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
                 'internet membantu manusia memperoleh informasi '
                 'dan berkomunikasi tanpa harus bertemu secara langsung.',
             'ikon': Icons.devices_rounded,
+            'gambar': 'assets/images/pengenalan_teknologi.png',
           },
           {
             'judul': 'Contoh Teknologi di Sekitar Kita',
@@ -522,7 +523,7 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
 
             const SizedBox(height: 24),
 
-            // REVISI 5: Ilustrasi untuk setiap slide materi
+            // Ilustrasi untuk setiap slide materi
             Center(
               child: Container(
                 width: 160,
@@ -531,11 +532,21 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
                   color: AppColors.purple.withValues(alpha: 0.10),
                   borderRadius: BorderRadius.circular(24),
                 ),
-                child: Icon(
-                  _slides[_slideAktif]['ikon'] as IconData,
-                  size: 80,
-                  color: AppColors.purple,
-                ),
+                child: _slides[_slideAktif]['gambar'] != null
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(24),
+                        child: Image.asset(
+                          _slides[_slideAktif]['gambar'],
+                          width: 160,
+                          height: 140,
+                          fit: BoxFit.cover,
+                        ),
+                      )
+                    : Icon(
+                        _slides[_slideAktif]['ikon'] as IconData,
+                        size: 80,
+                        color: AppColors.purple,
+                      ),
               ),
             ),
 

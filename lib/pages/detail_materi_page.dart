@@ -5,8 +5,8 @@ import '../theme/app_theme.dart';
 import '../models/materi_model.dart';
 import '../widgets/gradient_scaffold.dart';
 import 'materi_belajar_page.dart';
-import 'package:audioplayers/audioplayers.dart';
 
+import 'package:audioplayers/audioplayers.dart';
 
 class DetailMateriPage extends StatefulWidget {
   final MateriModel materi;
@@ -21,11 +21,9 @@ class _DetailMateriPageState extends State<DetailMateriPage> {
   final AudioPlayer _audioPlayer = AudioPlayer();
 
   Future<void> _putarSuaraKlik() async {
-  await _audioPlayer.stop();
-  await _audioPlayer.play(
-    AssetSource('audio/klik.mp3'),
-  );
-}
+    await _audioPlayer.stop();
+    await _audioPlayer.play(AssetSource('audio/klik.mp3'));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,11 +39,17 @@ class _DetailMateriPageState extends State<DetailMateriPage> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: Image.asset(
-                  widget.materi.judul == 'Pengenalan Teknologi'
-                      ? 'assets/images/pengenalan_teknologi.png'
-                      : widget.materi.judul == 'Sistem Komputer'
-                      ? 'assets/images/sistem_komputer.png'
-                      : 'assets/images/pengenalan_teknologi.png',
+                  switch (widget.materi.judul) {
+                    'Pengenalan Teknologi' =>
+                      'assets/images/pengenalan_teknologi.png',
+                    'Sistem Komputer' => 'assets/images/sistem_komputer.png',
+                    'Jaringan dan Internet' =>
+                      'assets/images/jaringan_internet.png',
+                    'Keamanan Digital' => 'assets/images/keamanan_digital.png',
+                    'Artificial Intelligence (AI)' =>
+                      'assets/images/ai.png',
+                    _ => 'assets/images/ai.png',
+                  },
                   width: double.infinity,
                   height: 200,
                   fit: BoxFit.cover,
@@ -150,7 +154,7 @@ class _DetailMateriPageState extends State<DetailMateriPage> {
                 onPressed: () async {
                   await _putarSuaraKlik();
                   final prefs = await SharedPreferences.getInstance();
-                  
+
                   await prefs.setString('materiTerakhir', widget.materi.judul);
                   await prefs.setInt('slideTerakhir', 0);
 
