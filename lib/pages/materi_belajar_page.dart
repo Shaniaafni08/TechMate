@@ -336,7 +336,7 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
                 'terus berubah mengikuti kebutuhan dan kemajuan '
                 'ilmu pengetahuan manusia.',
             'ikon': Icons.history_edu_rounded,
-            'gambar': 'assets/images/sejarah_teknologi.png',
+            'gambar': 'assets/images/sejarah_teknologi.jpg',
           },
           {
             'judul': 'Jenis-Jenis Teknologi',
