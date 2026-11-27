@@ -1958,6 +1958,16 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
                           true,
                         );
 
+                        // Memutar suara ketika materi selesai
+                        await _putarEfek('finish.mp3');
+
+                        // Memberi waktu agar suara selesai diputar
+                        await Future.delayed(
+                          const Duration(milliseconds: 1500),
+                        );
+
+                        if (!mounted) return;
+
                         Navigator.popUntil(context, (route) => route.isFirst);
                       }
                     },
