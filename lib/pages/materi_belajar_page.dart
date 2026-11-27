@@ -427,6 +427,7 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
                 'Membantu siswa memperoleh materi dan belajar '
                 'secara digital.',
             'ikon': Icons.lightbulb_rounded,
+            'gambar': 'assets/images/contoh.jpg',
           },
 
           {
@@ -532,7 +533,7 @@ class _MateriBelajarPageState extends State<MateriBelajarPage> {
                 'secara bijak, aman, dan bertanggung jawab agar '
                 'dapat memberikan manfaat bagi kehidupan.',
             'ikon': Icons.school_rounded,
-            'gambar': 'assets/images/kesimpulan_teknologi.png',
+            'gambar': 'assets/images/kesimpulan.png',
           },
         ];
 
