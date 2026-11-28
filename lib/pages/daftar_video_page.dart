@@ -16,16 +16,19 @@ class DaftarVideoPage extends StatelessWidget {
       'judul': 'Pengertian Teknologi',
       'deskripsi': 'Mengenal pengertian dan konsep dasar teknologi.',
       'file': 'assets/videos/pengenalan_teknologi.mp4',
+      'gambar': 'assets/images/teknologi.jfif',
     },
     {
       'judul': 'Perkembangan Teknologi',
       'deskripsi': 'Mempelajari perkembangan teknologi dari masa ke masa.',
       'file': 'assets/videos/video1.mp4',
+      'gambar': 'assets/images/video1.png',
     },
     {
       'judul': 'Manfaat Teknologi',
       'deskripsi': 'Mengenal manfaat teknologi dalam kehidupan sehari-hari.',
       'file': 'assets/videos/video2.mp4',
+      'gambar': 'assets/images/video2.png',
     },
   ];
 
@@ -158,52 +161,75 @@ class DaftarVideoPage extends StatelessWidget {
                 padding: const EdgeInsets.all(14),
                 child: Row(
                   children: [
-                    // Thumbnail ilustrasi
-                    Container(
-                      width: 94,
-                      height: 108,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [warna, warna.withOpacity(0.7)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Icon(
-                            Icons.ondemand_video_rounded,
-                            color: Colors.white.withOpacity(0.3),
-                            size: 62,
-                          ),
-                          Container(
-                            width: 43,
-                            height: 43,
-                            decoration: const BoxDecoration(
-                              color: Colors.white,
-                              shape: BoxShape.circle,
+                    // Thumbnail gambar video
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: SizedBox(
+                        width: 110,
+                        height: 100,
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            Image.asset(
+                              video['gambar']!,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  color: warna.withOpacity(0.15),
+                                  child: Icon(
+                                    Icons.image_not_supported_rounded,
+                                    color: warna,
+                                    size: 35,
+                                  ),
+                                );
+                              },
                             ),
-                            child: Icon(
-                              Icons.play_arrow_rounded,
-                              color: warna,
-                              size: 31,
-                            ),
-                          ),
-                          Positioned(
-                            left: 8,
-                            top: 8,
-                            child: Text(
-                              'VIDEO ${index + 1}',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 9,
-                                fontWeight: FontWeight.bold,
+
+                            // Lapisan transparan agar tombol play terlihat
+                            Container(color: Colors.black.withOpacity(0.12)),
+
+                            // Tombol play
+                            Center(
+                              child: Container(
+                                width: 42,
+                                height: 42,
+                                decoration: const BoxDecoration(
+                                  color: Colors.white,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  Icons.play_arrow_rounded,
+                                  color: warna,
+                                  size: 30,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+
+                            // Nomor video
+                            Positioned(
+                              left: 7,
+                              top: 7,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 7,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: warna,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Text(
+                                  'VIDEO ${index + 1}',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
 
