@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class PemutarVideoPage extends StatefulWidget {
   final String judul;
@@ -21,6 +22,7 @@ class _PemutarVideoPageState extends State<PemutarVideoPage> {
   late final VideoPlayerController _controller;
   late final Future<void> _inisialisasiVideo;
   Timer? _timerCekWaktu;
+  final AudioPlayer _audioPlayer = AudioPlayer();
 
   // Pengaturan aktivitas interaktif di tengah video
   bool _aktivitasSudahMuncul = false;
@@ -69,121 +71,224 @@ class _PemutarVideoPageState extends State<PemutarVideoPage> {
     }
   }
 
-  Future<void> _tampilkanAktivitasDiVideo() async {
-    int? jawabanDipilih;
-    String? pesan;
-    bool jawabanBenar = false;
-
-    final pilihan = [
-      'Mempermudah pekerjaan manusia',
-      'Membuat pekerjaan lebih sulit',
-      'Menghilangkan kebutuhan belajar',
-      'Membatasi komunikasi',
-    ];
-
-    final hasil = await showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (dialogContext) {
-        return StatefulBuilder(
-          builder: (context, setDialogState) {
-            return AlertDialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(22),
-              ),
-              title: const Row(
-                children: [
-                  Icon(Icons.quiz_rounded, color: Color(0xFF6A35D9)),
-                  SizedBox(width: 8),
-                  Expanded(child: Text('Waktunya Menjawab!')),
-                ],
-              ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Apa tujuan utama penggunaan teknologi '
-                    'dalam kehidupan sehari-hari?',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
-                  ),
-                  const SizedBox(height: 16),
-
-                  ...List.generate(pilihan.length, (index) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: OutlinedButton(
-                          onPressed: jawabanBenar
-                              ? null
-                              : () async {
-                                  if (index == 0) {
-                                    setDialogState(() {
-                                      jawabanDipilih = index;
-                                      jawabanBenar = true;
-                                      pesan = 'Benar! Hebat sekali! 🎉';
-                                    });
-
-                                    await Future.delayed(
-                                      const Duration(milliseconds: 1000),
-                                    );
-
-                                    if (dialogContext.mounted) {
-                                      Navigator.pop(dialogContext, true);
-                                    }
-                                  } else {
-                                    setDialogState(() {
-                                      jawabanDipilih = index;
-                                      pesan = 'Belum tepat, coba lagi ya! 💪';
-                                    });
-                                  }
-                                },
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: jawabanDipilih == index
-                                ? (jawabanBenar ? Colors.green : Colors.red)
-                                : const Color(0xFF6A35D9),
-                          ),
-                          child: Text(
-                            '${String.fromCharCode(65 + index)}. ${pilihan[index]}',
-                          ),
-                        ),
-                      ),
-                    );
-                  }),
-
-                  if (pesan != null)
-                    Text(
-                      pesan!,
-                      style: TextStyle(
-                        color: jawabanBenar ? Colors.green : Colors.red,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                ],
-              ),
-            );
-          },
-        );
-      },
-    );
-
-    if (!mounted) return;
-
-    _dialogAktivitasTampil = false;
-
-    if (hasil == true) {
-      await _controller.play();
+  Future<void> _putarEfek(String namaFile) async {
+    try {
+      await _audioPlayer.stop();
+      await _audioPlayer.play(AssetSource('audio/$namaFile'));
+    } catch (e) {
+      debugPrint('Gagal memutar efek suara: $e');
     }
   }
 
+
+Future<void> _tampilkanAktivitasDiVideo() async {
+  int? jawabanDipilih;
+  String? pesan;
+  bool jawabanBenar = false;
+
+  // Soal disesuaikan dengan judul video
+  late final Map<String, dynamic> aktivitas;
+
+  switch (widget.judul) {
+    case 'Pengertian Teknologi':
+      aktivitas = {
+        'pertanyaan':
+            'Apa tujuan utama penggunaan teknologi dalam kehidupan sehari-hari?',
+        'pilihan': [
+          'Mempermudah pekerjaan manusia',
+          'Membuat pekerjaan semakin sulit',
+          'Menghilangkan kebutuhan belajar',
+          'Membatasi komunikasi',
+        ],
+        'jawabanBenar': 0,
+      };
+      break;
+
+    case 'Perkembangan Teknologi':
+      aktivitas = {
+        'pertanyaan':
+            'Manakah contoh perkembangan teknologi komunikasi saat ini?',
+        'pilihan': [
+          'Mengirim surat menggunakan kurir saja',
+          'Menggunakan panggilan video melalui smartphone',
+          'Menulis pesan di atas kertas',
+          'Menggunakan mesin tik',
+        ],
+        'jawabanBenar': 1,
+      };
+      break;
+
+    case 'Manfaat Teknologi':
+      aktivitas = {
+        'pertanyaan':
+            'Bagaimana teknologi dapat membantu siswa dalam kegiatan belajar?',
+        'pilihan': [
+          'Mengurangi kesempatan memperoleh informasi',
+          'Membuat siswa tidak perlu belajar',
+          'Mempermudah mencari materi dan mengikuti pembelajaran online',
+          'Menghilangkan semua tugas sekolah',
+        ],
+        'jawabanBenar': 2,
+      };
+      break;
+
+    default:
+      aktivitas = {
+        'pertanyaan':
+            'Apa salah satu manfaat teknologi dalam kehidupan sehari-hari?',
+        'pilihan': [
+          'Mempermudah aktivitas manusia',
+          'Mempersulit komunikasi',
+          'Menghambat pekerjaan',
+          'Membatasi informasi',
+        ],
+        'jawabanBenar': 0,
+      };
+  }
+
+  final List<String> pilihan =
+      List<String>.from(aktivitas['pilihan']);
+
+  final int kunciJawaban = aktivitas['jawabanBenar'];
+
+  final hasil = await showDialog<bool>(
+    context: context,
+    barrierDismissible: false,
+    builder: (dialogContext) {
+      return StatefulBuilder(
+        builder: (context, setDialogState) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(22),
+            ),
+            title: const Row(
+              children: [
+                Icon(
+                  Icons.auto_awesome,
+                  color: Color(0xFF6A35D9),
+                ),
+                SizedBox(width: 8),
+                Expanded(
+                  child: Text('Aktivitas Interaktif'),
+                ),
+              ],
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  aktivitas['pertanyaan'],
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                ...List.generate(pilihan.length, (index) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton(
+                        onPressed: jawabanBenar
+                            ? null
+                            : () async {
+                                final benar =
+                                    index == kunciJawaban;
+
+                                if (benar) {
+                                  setDialogState(() {
+                                    jawabanDipilih = index;
+                                    jawabanBenar = true;
+                                    pesan =
+                                        'Benar! Jawaban kamu tepat 🎉';
+                                  });
+
+                                  // Efek suara jawaban benar
+                                  await _putarEfek('correct.mp3');
+
+                                  await Future.delayed(
+                                    const Duration(
+                                      milliseconds: 1000,
+                                    ),
+                                  );
+
+                                  if (dialogContext.mounted) {
+                                    Navigator.pop(
+                                      dialogContext,
+                                      true,
+                                    );
+                                  }
+                                } else {
+                                  // Efek suara jawaban salah
+                                  await _putarEfek('wrong.mp3');
+
+                                  if (!dialogContext.mounted) return;
+
+                                  setDialogState(() {
+                                    jawabanDipilih = index;
+                                    pesan =
+                                        'Belum tepat, coba lagi ya! 💪';
+                                  });
+                                }
+                              },
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: jawabanDipilih == index
+                              ? (jawabanBenar
+                                  ? Colors.green
+                                  : Colors.red)
+                              : const Color(0xFF6A35D9),
+                          side: BorderSide(
+                            color: jawabanDipilih == index
+                                ? (jawabanBenar
+                                    ? Colors.green
+                                    : Colors.red)
+                                : const Color(0xFF6A35D9),
+                          ),
+                        ),
+                        child: Text(
+                          '${String.fromCharCode(65 + index)}. ${pilihan[index]}',
+                        ),
+                      ),
+                    ),
+                  );
+                }),
+
+                if (pesan != null)
+                  Text(
+                    pesan!,
+                    style: TextStyle(
+                      color: jawabanBenar
+                          ? Colors.green
+                          : Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+              ],
+            ),
+          );
+        },
+      );
+    },
+  );
+
+  _dialogAktivitasTampil = false;
+
+  if (!mounted) return;
+
+  // Video dilanjutkan setelah jawaban benar
+  if (hasil == true) {
+    await _controller.play();
+  }
+}
+
   @override
   void dispose() {
-    // Menghentikan timer ketika halaman ditutup
     _timerCekWaktu?.cancel();
-
     _controller.dispose();
-
+    _audioPlayer.dispose();
     super.dispose();
   }
 
